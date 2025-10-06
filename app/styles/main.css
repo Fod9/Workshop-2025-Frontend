@@ -1,0 +1,44 @@
+.home-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #e0f7fa;
+    color: #00695c;
+    font-family: 'Arial', sans-serif;
+}
+
+.home-page-container h1 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.join-game-button, .create-game-button {
+    background-color: #428F63;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    margin: 0.5rem;
+    font-size: 1.25rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 25%;
+    outline: none;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.create-game-button {
+    background-color: #4372B0;
+}
+
+.join-game-button:hover {
+    background-color: #357a4a;
+    transform: scale(1.05);
+}
+.create-game-button:hover {
+    background-color: #3561a0;
+    transform: scale(1.05);
+}
