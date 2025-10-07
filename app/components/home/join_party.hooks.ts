@@ -3,7 +3,7 @@ import { backendService } from "~/services/backend";
 
 interface JoinPartyParams {
     name: string;
-    hostName: string;
+    joinCode: string;
 }
 
 export interface PartyPlayer {
@@ -13,9 +13,8 @@ export interface PartyPlayer {
 }
 
 export interface PartySummary {
-    code: string;
     name: string;
-    host_name: string;
+    join_code: string;
     players: PartyPlayer[];
     id?: string;
     stage?: number;
@@ -32,13 +31,13 @@ export function useJoinParty() {
         try {
             const payload = await backendService.post<unknown>("/game/join", {
                 name: params.name.trim(),
-                host_name: params.hostName.trim(),
+                join_code: params.joinCode.trim(),
             });
 
             const party = normalisePartyResponse(payload, params);
 
-            if (!party.players.some((player) => player.name === party.host_name)) {
-                party.players.unshift({ id: "host", name: party.host_name, continent: "Europe" });
+            if (!party.players.some((player) => player.name === party.join_code)) {
+                party.players.unshift({ id: "host", name: party.join_code, continent: "Europe" });
             }
 
             return party;
@@ -72,25 +71,22 @@ function normalisePartyResponse(raw: unknown, params: JoinPartyParams): PartySum
         candidate.code
     );
     const name = (getString(details.name ?? candidate.name) ?? params.name).trim();
-    const hostName = (
+    const joinCode = (
         getString(
-            details.host_name ??
-                details.hostName ??
-                candidate.host_name ??
-                candidate.hostName
-        ) ?? params.hostName
+            details.join_code ??
+                details.joinCode ??
+                candidate.join_code ??
+                candidate.joinCode
+        ) ?? params.joinCode
     ).trim();
     const stage = getNumber(details.stage ?? candidate.stage);
     const id = getString(details.id ?? candidate.id);
 
-    if (!code) {
-        throw new Error("Le code de la partie est manquant dans la réponse serveur");
-    }
     if (!name) {
-        throw new Error("Le nom de la partie est manquant");
+        throw new Error("Le nom du joueur est manquant");
     }
-    if (!hostName) {
-        throw new Error("Le nom de l'hôte est manquant");
+    if (!joinCode) {
+        throw new Error("Le code de la partie est manquant");
     }
 
     const players = normalisePlayers(
@@ -101,9 +97,8 @@ function normalisePartyResponse(raw: unknown, params: JoinPartyParams): PartySum
     );
 
     return {
-        code,
         name,
-        host_name: hostName,
+        join_code: joinCode,
         players,
         id,
         stage,
@@ -222,7 +217,7 @@ function hasPartyShape(record: Record<string, unknown>): boolean {
         "join_code" in record ||
         "code" in record ||
         "name" in record ||
-        "host_name" in record ||
+        "join_code" in record ||
         Array.isArray(record.players) ||
         Array.isArray(record.participants)
     );
