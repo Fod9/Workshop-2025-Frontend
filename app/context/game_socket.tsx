@@ -19,7 +19,7 @@ type IncomingEvent = {
 };
 
 export function GameSocketProvider({ children }: { children: React.ReactNode }) {
-  const { gameId, players, addPlayer, removePlayer, setPlayerCount } = useGame();
+  const { gameId, players, addPlayer, removePlayer, setPlayerCount, setPlayers, setStage } = useGame();
   const [status, setStatus] = useState<SocketStatus>("disconnected");
   const [lastError, setLastError] = useState<Error | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -135,18 +135,32 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
         const mapped: PartyPlayer[] = list
           .map(toPartyPlayer)
           .filter((v): v is PartyPlayer => v != null);
-        // naive sync: add missing
-        mapped.forEach((p) => {
-          if (!players.some((pp) => pp.id === p.id)) addPlayer(p);
-        });
+        setPlayers(mapped);
         setPlayerCount(mapped.length);
+        break;
+      }
+
+      case "game_continued": {
+        const obj = (event.data && typeof event.data === "object") ? (event.data as Record<string, unknown>) : {};
+        const stageVal = obj.stage;
+        if (typeof stageVal === "number") {
+          setStage(stageVal);
+        }
+        const list = Array.isArray(obj.players) ? obj.players : [];
+        const mapped: PartyPlayer[] = list
+          .map(toPartyPlayer)
+          .filter((v): v is PartyPlayer => v != null);
+        if (mapped.length) {
+          setPlayers(mapped);
+          setPlayerCount(mapped.length);
+        }
         break;
       }
 
       default:
         break;
     }
-  }, [addPlayer, players, removePlayer, setPlayerCount]);
+  }, [addPlayer, players, removePlayer, setPlayerCount, setPlayers, setStage]);
 
   const send = useCallback((data: unknown) => {
     const ws = wsRef.current;
@@ -175,7 +189,7 @@ function toPartyPlayer(raw: unknown): PartyPlayer | null {
   const name = typeof r.name === "string" ? r.name : null;
   const continent = typeof r.continent === "string" ? r.continent.trim() : "Unknown";
   if (!id || !name) return null;
-  return { id, name, continent };
+  return { id, name, continent, is_host: Boolean(r.is_host) };
 }
 
 function toNumber(raw: unknown): number | null {
@@ -186,4 +200,3 @@ function toNumber(raw: unknown): number | null {
   }
   return null;
 }
-

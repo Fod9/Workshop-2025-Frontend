@@ -56,7 +56,7 @@ function toPartySummary(game: GameRead): PartySummary {
 
 function mapPlayers(players: PlayerRead[], hostName: string): PartyPlayer[] {
   const mapped: Array<{ player: PartyPlayer; isHost: boolean }> = players.map((p) => ({
-    player: { id: String(p.id), name: p.name, continent: p.continent.trim() },
+    player: { id: String(p.id), name: p.name, continent: p.continent.trim(), is_host: p.is_host === true },
     isHost: p.is_host === true,
   }));
 

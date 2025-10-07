@@ -31,7 +31,7 @@ function normaliseCandidate(candidate: unknown): PartyPlayer | null {
   }
 
   const continent = typeof record.continent === "string" ? record.continent : "Unknown";
-  return { id, name, continent };
+  return { id, name, continent, is_host: Boolean(record.is_host) };
 }
 
 function readPlayerFromStorage(): PartyPlayer | null {
@@ -68,6 +68,7 @@ export function PlayerProvider({ children, initialPlayer = null }: PlayerProvide
   const [player, setPlayerState] = useState<PartyPlayer | null>(() => initialPlayer ?? readPlayerFromStorage());
 
   useEffect(() => {
+    console.log("player" + JSON.stringify(player));
     writePlayerToStorage(player);
   }, [player]);
 

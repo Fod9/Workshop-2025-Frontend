@@ -11,7 +11,7 @@ export default function CreateParty() {
     const { createParty, isCreating, error } = useCreateParty();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const { setPlayer } = usePlayer();
-    const { addPlayer, setGameId, setCode, setPlayers } = useGame();
+    const { addPlayer, setGameId, setCode, setPlayers, setStage } = useGame();
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -33,6 +33,7 @@ export default function CreateParty() {
                 setGameId(party.id);
                 setCode(party.code);
                 setPlayers(party.players);
+                setStage(party.stage);
                 setIsModalOpen(false);
                 navigate(`/party/${party.code}`, { state: { party } });
             }

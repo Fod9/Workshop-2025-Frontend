@@ -9,7 +9,7 @@ export default function JoinParty() {
     const navigate = useNavigate();
     const { joinParty, isJoining, error } = useJoinParty();
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const { setGameId, setCode, addPlayer, setPlayers } = useGame();
+    const { setGameId, setCode, addPlayer, setPlayers, setStage } = useGame();
     const { setPlayer } = usePlayer();
 
     const handleOpenModal = () => {
@@ -31,6 +31,7 @@ export default function JoinParty() {
                 setGameId(party.id);
                 setCode(party.code);
                 setPlayers(party.players);
+                setStage(party.stage);
                 const currentPlayer = party.players.find(p => p.name === playerName);
                 if (currentPlayer) {
                     setPlayer(currentPlayer);

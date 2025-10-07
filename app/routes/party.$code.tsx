@@ -4,7 +4,10 @@ import type { PartySummary } from "~/types/party";
 import "../styles/home.css";
 import "../styles/modal.css";
 import PlayerCard from "~/components/global/PlayerCard";
+import { backendService } from "~/services/backend";
+import type { ApiSuccess, GameRead } from "~/types/backend";
 import { useGame } from "~/context/game";
+import { usePlayer } from "~/context/player";
 
 interface LocationState {
   party?: PartySummary;
@@ -15,7 +18,33 @@ export default function PartyDetails() {
   const { code } = useParams<{ code: string }>();
   const location = useLocation() as { state?: LocationState | null };
   const party = location.state?.party ?? null;
-  const { players: ctxPlayers, code: ctxCode } = useGame();
+  const { players: ctxPlayers, code: ctxCode, gameId, setStage, setPlayers } = useGame();
+
+  async function handleContinue() {
+    try {
+      if (!gameId) return;
+      const res = await backendService.post<ApiSuccess<GameRead>>(`/game/continue/${gameId}`);
+      if (res?.status === "success" && res.data) {
+        setStage(res.data.stage);
+        const mapped = (res.data.players ?? []).map((p) => ({
+          id: String(p.id),
+          name: p.name,
+          continent: (p.continent ?? "").toString().trim(),
+          is_host: p.is_host === true,
+        }));
+        if (mapped.length) setPlayers(mapped);
+      }
+    } catch (e) {
+      console.error("continue game failed", e);
+    }
+  }
+  const { player } = usePlayer();
+
+
+  function start_game() {
+    if (!party) return;
+    
+  }
 
   if (!party) {
     return (
@@ -66,9 +95,11 @@ export default function PartyDetails() {
             <button type="button" className="join-game-button" onClick={() => navigate(-1)}>
               Retour
             </button>
-            <button type="button" className="create-game-button" onClick={() => navigate("/")}>
+            {player?.is_host && (
+            <button type="button" className="create-game-button" onClick={handleContinue}>
               Lancer la partie
             </button>
+            )}
           </div>
         </div>
       </main>
