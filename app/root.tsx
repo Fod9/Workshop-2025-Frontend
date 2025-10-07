@@ -11,6 +11,7 @@ import type { Route } from "./+types/root";
 import "./app.css";
 import { PlayerProvider } from "~/context/player";
 import { GameProvider } from "./context/game";
+import { GameSocketProvider } from "~/context/game_socket";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -47,7 +48,9 @@ export default function App() {
   return (
     <GameProvider>
       <PlayerProvider>
-        <Outlet />
+        <GameSocketProvider>
+          <Outlet />
+        </GameSocketProvider>
       </PlayerProvider>
     </GameProvider>
   );

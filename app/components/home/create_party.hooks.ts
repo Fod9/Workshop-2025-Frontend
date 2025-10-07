@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { backendService } from "~/services/backend";
 import type { PartySummary } from "~/types/party";
 import type { GameRead, PlayerRead, ApiSuccess } from "~/types/backend";
+import type { PartyPlayer } from "~/types/player";
 
 interface CreatePartyParams {
   name: string;
@@ -21,8 +22,6 @@ export function useCreateParty() {
         name: name.trim(),
         host_name: hostName.trim(),
       });
-
-      console.log(payload)
 
       // Defensive guard in case backend changes shape at runtime
       if (!payload || payload.status !== "success" || !payload.data) {
@@ -44,12 +43,7 @@ export function useCreateParty() {
 
 function toPartySummary(game: GameRead): PartySummary {
   const id = String(game.id);
-  const players = game.players.map((p) => ({
-    id: p.id,
-    name: p.name,
-    is_host: p.is_host,
-    continent: p.continent.trim(),
-  }));
+  const players = mapPlayers(game.players ?? [], game.host_name);
 
   return {
     code: game.join_code,
@@ -59,4 +53,19 @@ function toPartySummary(game: GameRead): PartySummary {
     id,
     stage: game.stage,
   };
+}
+
+function mapPlayers(players: PlayerRead[], hostName: string): PartyPlayer[] {
+  const mapped: Array<{ player: PartyPlayer; isHost: boolean }> = players.map((p) => ({
+    player: { id: String(p.id), name: p.name, continent: p.continent.trim() },
+    isHost: p.is_host === true,
+  }));
+
+  const hostIndex = mapped.findIndex((m) => m.isHost || m.player.name === hostName);
+  if (hostIndex > -1) {
+    const [host] = mapped.splice(hostIndex, 1);
+    return [host.player, ...mapped.map((m) => m.player)];
+  }
+
+  return mapped.map((m) => m.player);
 }

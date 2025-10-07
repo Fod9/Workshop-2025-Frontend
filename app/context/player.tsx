@@ -23,14 +23,15 @@ function normaliseCandidate(candidate: unknown): PartyPlayer | null {
   }
 
   const record = candidate as Record<string, unknown>;
-  const id = typeof record.id === "number" ? record.id : null;
+  const rawId = record.id;
+  const id = typeof rawId === "string" ? rawId : typeof rawId === "number" ? String(rawId) : null;
   const name = typeof record.name === "string" ? record.name : null;
   if (!id || !name) {
     return null;
   }
 
   const continent = typeof record.continent === "string" ? record.continent : "Unknown";
-  return { id, name, continent, is_host: Boolean(record.is_host) };
+  return { id, name, continent };
 }
 
 function readPlayerFromStorage(): PartyPlayer | null {

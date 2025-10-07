@@ -12,7 +12,8 @@ export type GameRead = {
   stage: number;
   join_code: string;
   host_name: string;
-  players: PlayerRead[]
+  players?: PlayerRead[] | null;
+  websocket_url?: string | null;
 };
 
 export type ApiSuccess<T> = {

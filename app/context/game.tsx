@@ -30,14 +30,17 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }, [players]);
 
     const addPlayer = (player: PartyPlayer) => {
-        setPlayer((prevPlayers) => [...prevPlayers, player]);
+        setPlayer((prevPlayers) => {
+            if (prevPlayers.some((p) => p.id === player.id)) return prevPlayers;
+            return [...prevPlayers, player];
+        });
     }
     const setPlayers = (players: PartyPlayer[]) => {
         setPlayer(players);
     };
 
     const removePlayer = (player: PartyPlayer) => {
-        setPlayer((prevPlayers) => prevPlayers.filter(p => p !== player));
+        setPlayer((prevPlayers) => prevPlayers.filter(p => p.id !== player.id));
     }
     return (
         <GameContext.Provider value={{ code, setCode, gameId, setGameId, playerCount, setPlayerCount, players, addPlayer, removePlayer, setPlayers }}>
@@ -53,4 +56,3 @@ export function useGame() {
     }
     return context;
 }
-
