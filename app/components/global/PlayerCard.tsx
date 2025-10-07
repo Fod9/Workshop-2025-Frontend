@@ -9,4 +9,4 @@ export default function PlayerCard({ name, continent }: { name: string; continen
             <p className="player-name">{name}</p>
         </div>
     );
-    }
+}

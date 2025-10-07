@@ -1,3 +1,7 @@
+// to delete
+import { useEffect } from "react";
+//
+
 import {
   isRouteErrorResponse,
   Links,
@@ -5,6 +9,10 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  // to delete
+  useLocation,
+  useNavigate
+  //
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -44,6 +52,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+
+  // to delete
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      navigate("/asia/1", { replace: true });
+    }
+  }, [location.pathname, navigate]);
+  //
+
   return (
     <GameProvider>
       <PlayerProvider>

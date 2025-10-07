@@ -1,0 +1,43 @@
+body {
+    background-color: var(--color-soft-black)
+}
+
+.console-text {
+    color: var(--color-bright-turquoise);
+    font-family: "Source Code Pro", sans-serif;
+}
+
+.outlined-container {
+    position: relative;
+    display: flex;
+    border: 0.5px solid var(--color-soft-white);
+    border-radius: 10px;
+    height: 25rem;
+    width: 70%;
+    margin: auto;
+    margin-top: 5rem;
+}
+
+.target-value {
+    height: 2rem;
+    background-color: var(--color-soft-black);
+    padding: 0 0.5rem;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: -1.2rem;
+    left: 8.5rem;
+}
+
+.white {
+    color: var(--color-soft-white)
+}
+
+.green {
+    color: var(--color-green);
+    padding-left: 0.5rem;
+}
+
+.bold {
+    font-weight: 700;
+}
