@@ -1,0 +1,27 @@
+.player-card {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 25%;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.player-continent {
+    font-size: 1.2rem;
+    text-align: center;
+    font-weight: 800;
+}
+
+.player-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.player-card img {
+    width: 60%;
+    height: auto;
+    align-self: center;
+    margin-bottom: 1rem;
+}

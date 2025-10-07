@@ -90,7 +90,7 @@ async function request<TResponse = unknown>(path: string, options: RequestOption
 }
 
 function query(options?: RequestOptions): RequestOptions {
-  return { credentials: "include", ...options };
+  return { credentials: "omit", ...options };
 }
 
 export const backendService = {

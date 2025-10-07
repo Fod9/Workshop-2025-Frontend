@@ -1,0 +1,49 @@
+.party-page-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: transparent;
+}
+
+.party-details {
+    max-width: 600px;
+    width: 100%;
+}
+
+.party-details h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.party-details .party-code-container {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.party-code-container .party-code-label {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+}
+.party-code-container .party-code {
+    font-size: 1.75rem;
+    letter-spacing: 0.15rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.party-details .create-game-button, .party-details .join-game-button-modal {
+    height: auto;
+    width: auto;
+}
+
+.player-cards {
+    display: flex;
+    gap: 1rem;
+    justify-content: start;
+}
