@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useCurrentPlayer } from "~/context/player";
 
 export interface CreatePartyFormValues {
     partyName: string;
@@ -21,14 +22,15 @@ export default function CreatePartyModal({
     onSubmit,
 }: CreatePartyModalProps) {
     const [partyName, setPartyName] = useState("");
-    const [playerName, setPlayerName] = useState("");
+    const currentPlayer = useCurrentPlayer();
+    const [playerName, setPlayerName] = useState(currentPlayer?.name ?? "");
 
     useEffect(() => {
         if (isOpen) {
             setPartyName("");
-            setPlayerName("");
+            setPlayerName(currentPlayer?.name ?? "");
         }
-    }, [isOpen]);
+    }, [isOpen, currentPlayer?.name]);
 
     const errorMessage = useMemo(() => {
         if (!error) {

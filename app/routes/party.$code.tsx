@@ -1,5 +1,6 @@
 import { useLocation, useNavigate, useParams } from "react-router";
-import type { PartyPlayer, PartySummary } from "~/components/home/create_party.hooks";
+import type { PartyPlayer } from "~/types/player";
+import type { PartySummary } from "~/types/party";
 import "../styles/home.css";
 import "../styles/modal.css";
 import PlayerCard from "~/components/global/PlayerCard";

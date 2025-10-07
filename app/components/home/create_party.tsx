@@ -2,11 +2,16 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import CreatePartyModal, { type CreatePartyFormValues } from "./create_party_modal";
 import { useCreateParty } from "./create_party.hooks";
+import { usePlayer } from "~/context/player";
+import { useGame } from "~/context/game";
+import type { PartyPlayer } from "~/types/player";
 
 export default function CreateParty() {
     const navigate = useNavigate();
     const { createParty, isCreating, error } = useCreateParty();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const { setPlayer } = usePlayer();
+    const { addPlayer, setGameId, setCode, setPlayers } = useGame();
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
@@ -23,6 +28,11 @@ export default function CreateParty() {
             const party = await createParty({ name: partyName, hostName: playerName });
 
             if (party) {
+                const currentPlayer = party.players[0] as PartyPlayer;
+                setPlayer(currentPlayer);
+                setGameId(party.id);
+                setCode(party.code);
+                setPlayers(party.players);
                 setIsModalOpen(false);
                 navigate(`/party/${party.code}`, { state: { party } });
             }
