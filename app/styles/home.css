@@ -177,8 +177,8 @@
     border: none;
     padding: 1rem 2rem;
     font-size: 1.25rem;
-    border-radius: 8px;
     cursor: pointer;
+    border-radius: 8px;
     transition: background-color 0.3s ease;
     width: 100%;
     max-width: 300px;

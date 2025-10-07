@@ -39,6 +39,7 @@ export default function PartyDetails() {
     <>
       <img src="/assets/world_map.svg" className="background-image" alt="Background" />
       <main className="party-page-container">
+        <img src="/assets/logo.svg" alt="Logo" className="logo-top" />
         <div className="party-details">
           <h1>{party.name}</h1>
           <div className="party-code-container">
@@ -54,6 +55,9 @@ export default function PartyDetails() {
               players.map((player) => (
                 <div key={player.id} className="player-cards">
                   <PlayerCard name={player.name} continent={player.continent} />
+                  <PlayerCard name={player.name} continent={"Afrique"} />
+                  <PlayerCard name={player.name} continent={"Asie"} />
+                  <PlayerCard name={player.name} continent={"Amerique"} />
                 </div>
               ))
             )}
@@ -63,7 +67,7 @@ export default function PartyDetails() {
               Retour
             </button>
             <button type="button" className="create-game-button" onClick={() => navigate("/")}>
-              Retour à l'accueil
+              Lancer la partie
             </button>
           </div>
         </div>

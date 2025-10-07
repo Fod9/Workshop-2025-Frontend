@@ -6,11 +6,20 @@
     min-height: 100vh;
     padding: 2rem;
     background-color: transparent;
+    border-radius: 35px;
+}
+
+.logo-top {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 50px;
 }
 
 .party-details {
-    max-width: 600px;
+    max-width: 800px;
     width: 100%;
+    background-color: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(6px);
 }
 
 .party-details h1 {
@@ -37,13 +46,29 @@
     text-transform: uppercase;
 }
 
-.party-details .create-game-button, .party-details .join-game-button-modal {
+.party-details .create-game-button, .party-details .join-game-button {
     height: auto;
     width: auto;
+    padding: 0.9rem 1.3rem;
+    margin: 0 0.4rem;
 }
 
 .player-cards {
     display: flex;
     gap: 1rem;
     justify-content: start;
+}
+
+.player-container h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.party-actions {
+    display: flex;
+    gap: 0px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
 }
