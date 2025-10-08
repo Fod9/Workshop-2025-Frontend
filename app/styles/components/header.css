@@ -1,0 +1,22 @@
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.5rem;
+    height: 3.5rem;
+    background-color: var(--color-dark-grey);
+    padding: 0 1rem;
+}
+
+.logo {
+    height: 30px;
+    width: auto;
+    display: block;
+    margin: 0;
+}
+
+.header-title {
+    color: var(--color-soft-white);
+    font-size: 1.2rem;
+    font-weight: 500;
+}

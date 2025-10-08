@@ -1,0 +1,193 @@
+body {
+    background-color: var(--color-soft-black);
+    background-size: 40px 40px;
+    background-image:
+        linear-gradient(to right, rgb(48, 48, 48) 1px, transparent 1px),
+        linear-gradient(to bottom, rgb(48, 48, 48) 1px, transparent 1px);
+}
+
+.console-text {
+    color: var(--color-bright-turquoise);
+    font-family: "Source Code Pro", sans-serif;
+    font-size: 1.2rem;
+}
+
+.consigne {
+    padding: 1rem 0 0 2rem;
+}
+
+.outlined-container {
+    position: relative;
+    display: flex;
+    border: 0.5px solid var(--color-soft-white);
+    border-radius: 10px;
+    height: 30rem;
+    width: 60%;
+    margin: auto;
+    margin-top: 5rem;
+}
+
+.target-value {
+    margin: 2rem 0 0 2rem;
+    display: flex
+}
+
+.current-value {
+    margin: 0 0 0 2rem;
+    display: flex;
+}
+
+.white {
+    color: var(--color-soft-white)
+}
+
+.green {
+    color: var(--color-green);
+    padding-left: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.red {
+    color: var(--color-red);
+    padding-left: 0.5rem;
+    font-size: 1.5rem;
+}
+
+.bold {
+    font-weight: 700;
+}
+
+.number {
+    color: var(--color-soft-white);
+    font-family: "Source Code Pro", sans-serif;
+    font-weight: 200;
+    font-size: 5rem;
+    border: 0.5px solid var(--color-soft-white);
+    padding: 0 2rem;
+}
+
+.top-left {
+    background-color: var(--color-soft-black);
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 3rem;
+    left: -3.5rem;
+}
+
+.middle-left {
+    background-color: var(--color-soft-black);
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 11.8rem;
+    left: -3.5rem;
+}
+
+.bottom-left {
+    background-color: var(--color-soft-black);
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 3rem;
+    left: -3.5rem;
+}
+
+.top-right {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 3rem;
+    right: 0rem;
+}
+
+.middle-right {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 11rem;
+    right: 0rem;
+}
+
+.bottom-right {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 3rem;
+    right: 0rem;
+}
+
+.calculated-value-text {
+    background-color: var(--color-soft-black);
+    display: flex;
+    position: absolute;
+    top: -2rem;
+    left: 40%
+}
+
+.calculated-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-red)
+}
+
+.right-calculated-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--color-green)
+}
+
+.top-bidule {
+    height: 0.5rem;
+    position: absolute;
+    top: 6rem;
+    left: 3.6rem
+}
+
+.middle-bidule {
+    height: 0.5rem;
+    position: absolute;
+    top: 14.8rem;
+    left: 3.6rem
+}
+
+.bottom-bidule {
+    height: 0.5rem;
+    position: absolute;
+    bottom: 6rem;
+    left: 3.6rem
+}
+
+.cables {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: visible;
+}
+
+.cables path {
+  stroke-linecap: round;
+}
+
+.top-bidule,
+.middle-bidule,
+.bottom-bidule {
+  cursor: crosshair;
+  user-select: none; /* évite le texte ou image sélectionnée */
+}
+
+/* Symboles */
+.top-sym,
+.middle-sym,
+.bottom-sym {
+  transition: filter 0.2s ease, transform 0.1s ease;
+}
+
+/* Quand le symbole est survolé par le câble */
+.top-right.hovered-symbol img,
+.middle-right.hovered-symbol img,
+.bottom-right.hovered-symbol img {
+  filter: brightness(1.5) saturate(1.3) hue-rotate(120deg);
+}
