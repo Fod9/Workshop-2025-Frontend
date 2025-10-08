@@ -179,6 +179,23 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
         }
         break;
       }
+      
+      case "chat_message": {
+        const chatData = event.data as Record<string, unknown>;
+        if (chatData && typeof chatData === "object") {
+          const message = {
+            id: `${Date.now()}-${Math.random()}`,
+            playerId: String(chatData.playerId || ""),
+            playerName: String(chatData.playerName || "Unknown"),
+            message: String(chatData.message || ""),
+            timestamp: new Date(String(chatData.timestamp || new Date().toISOString()))
+          };
+        
+          // Dispatch custom event for chat context to listen to
+          window.dispatchEvent(new CustomEvent('chat_message', { detail: message }));
+        }
+        break;
+      }
 
       default:
         break;

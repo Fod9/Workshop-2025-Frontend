@@ -21,6 +21,8 @@ import { PlayerProvider } from "~/context/player";
 import { GameProvider } from "./context/game";
 import { GameSocketProvider } from "~/context/game_socket";
 import Chronometer from "~/components/global/Chronometer";
+import { ChatProvider } from "./context/chat";
+import Chat from "./components/layout/Chat";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -60,8 +62,11 @@ export default function App() {
     <GameProvider>
       <PlayerProvider>
         <GameSocketProvider>
-          <Chronometer />
-          <Outlet />
+          <ChatProvider>
+            <Chronometer />
+            <Outlet />
+            <Chat />
+          </ChatProvider>
         </GameSocketProvider>
       </PlayerProvider>
     </GameProvider>
