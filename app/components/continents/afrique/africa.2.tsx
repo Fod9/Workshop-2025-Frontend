@@ -1,24 +1,54 @@
-import {  useMemo, useState } from "react";
+import {  useMemo, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import Header from "../components/layout/Header";
-import "../styles/afrique.css";
+import Header from "~/components/layout/Header";
+import "~/styles/continents/afrique/africa2.css";
+import { backendService } from "~/services/backend";
+import type { ApiSuccess, GameRead } from "~/types/backend";
+import { useGame } from "~/context/game";
 
-// Remplace cette constante par la vraie phrase attendue si besoin
 const EXPECTED_PHRASE = "PRIORISER LA FAUNE, REDUIRE LA SECHERESSE.";
 
-// Emplacement pour la phrase en morse (affichage piste)
 const MORSE_CLUE = "·−−· ·−· ·· −−− ·−· ·· ··· · ·−·  ·−·· ·−  ··−· ·− ··− −· · −−··−−  ·−· ··−·· −·· ··− ·· ·−· ·  ·−·· ·−  ··· ··−·· −·−· ···· · ·−· · ··· ··· · ·−·−·− ";
 
 export default function AfriqueRound2() {
   const [value, setValue] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [accepted, setAccepted] = useState<boolean | null>(null);
+  const { gameId, setStage, setPlayers } = useGame();
+  const continuedRef = useRef(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+
+  async function continueGameOnce() {
+    if (continuedRef.current) return;
+    continuedRef.current = true;
+    try {
+      if (!gameId) return;
+      const res = await backendService.post<ApiSuccess<GameRead>>(`/game/continue/${gameId}`);
+      if (res?.status === "success" && res.data) {
+        setStage(res.data.stage);
+        const mapped = (res.data.players ?? []).map((p) => ({
+          id: String(p.id),
+          name: p.name,
+          continent: (p.continent ?? "").toString().trim(),
+          is_host: p.is_host === true,
+        }));
+        if (mapped.length) setPlayers(mapped);
+      }
+    } catch (e) {
+      console.error("continue game failed", e);
+    }
+  }
+
+  // No auto-continue; proceed only on explicit click
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     const ok = value.trim() === EXPECTED_PHRASE;
     setAccepted(ok);
     setSubmitted(true);
+    if (ok) {
+      setShowOverlay(true);
+    }
   };
 
   const statusLine = useMemo(() => {
@@ -72,8 +102,23 @@ export default function AfriqueRound2() {
             </div>
           </div>
         )}
+
+        {showOverlay && accepted && (
+          <div className="success-overlay" role="dialog" aria-modal="true">
+            <div className="console-overlay">
+              <p className="console-line delay-1">&gt; Déchiffrement terminé...</p>
+              <p className="console-line delay-2">&gt; Configuration transmise au noeud Afrique.</p>
+              <p className="console-line delay-3 green">&gt; Biodiversité priorisée, sécheresse en baisse.</p>
+              <button
+                className="btn-console delay-4"
+                onClick={() => void continueGameOnce()}
+              >
+                Continuer
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </>
   );
 }
-

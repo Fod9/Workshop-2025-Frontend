@@ -21,14 +21,14 @@ type IncomingEvent = {
 };
 
 export function GameSocketProvider({ children }: { children: React.ReactNode }) {
-  const { gameId, addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage } = useGame();
+  const { gameId, addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage, setCode, setGameId } = useGame();
   const [status, setStatus] = useState<SocketStatus>("disconnected");
   const [lastError, setLastError] = useState<Error | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const retryRef = useRef<number>(0);
   const reconnectTimer = useRef<number | null>(null);
   const currentGameIdRef = useRef<string | null>(null);
-  const { player } = usePlayer();
+  const { player, clearPlayer } = usePlayer();
   const navigate = useNavigate();
 
 
@@ -148,6 +148,23 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
       case "player_left": {
         const id = toId(event.data);
         if (id) removePlayerById(id);
+        // If the game has started, force everyone to leave
+        if (stage > 0) {
+          try {
+            if (typeof window !== "undefined") {
+              window.sessionStorage.removeItem("workshop:game");
+              window.sessionStorage.removeItem("workshop:player");
+            }
+          } catch {}
+          setCode(null);
+          setGameId(null);
+          setPlayers([]);
+          setPlayerCount(0);
+          setStage(0);
+          setChronometer(null);
+          clearPlayer();
+          navigate("/");
+        }
         break;
       }
 
@@ -183,7 +200,7 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
       default:
         break;
     }
-  }, [addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer]);
+  }, [addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage, setCode, setGameId, clearPlayer, navigate]);
 
   const send = useCallback((data: unknown) => {
     const ws = wsRef.current;

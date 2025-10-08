@@ -8,7 +8,7 @@
     padding: 0 1rem;
 }
 
-.logo {
+.header-container .logo {
     height: 30px;
     width: auto;
     display: block;

@@ -1,21 +1,21 @@
 import { useParams } from "react-router-dom";
 import Header from "../components/layout/Header";
-import AsiaRound1 from "../components/continents/asie/asia.1";
-import AsiaRound2 from "../components/continents/asie/asia.2";
+import EuropeRound1 from "../components/continents/europe/europe.1";
+import EuropeRound2 from "../components/continents/europe/europe.2";
 
-export default function AsiaRound() {
+export default function EuropeRound() {
   const { round } = useParams<{ round: string }>();
 
   switch (round) {
     case "1":
-      return <AsiaRound1 round={round} />;
+      return <EuropeRound1 />;
     case "2":
-      return <AsiaRound2 />;
+      return <EuropeRound2 />;
     default:
       return (
         <>
-          <Header title="- Asie : Pollution de l'air" />
-          <main className="asia-screen">
+          <Header title="- Europe : Production d'énergie" />
+          <main className="europe-screen">
             <div className="container">
               <p>Round inconnu</p>
             </div>

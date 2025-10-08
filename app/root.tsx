@@ -1,18 +1,10 @@
-// to delete
-import { useEffect } from "react";
-//
-
 import {
   isRouteErrorResponse,
   Links,
   Meta,
   Outlet,
   Scripts,
-  ScrollRestoration,
-  // to delete
-  useLocation,
-  useNavigate
-  //
+  ScrollRestoration
 } from "react-router";
 
 import type { Route } from "./+types/root";
@@ -21,6 +13,7 @@ import { PlayerProvider } from "~/context/player";
 import { GameProvider } from "./context/game";
 import { GameSocketProvider } from "~/context/game_socket";
 import Chronometer from "~/components/global/Chronometer";
+import LeaveGameButton from "~/components/global/LeaveGameButton";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -61,6 +54,7 @@ export default function App() {
       <PlayerProvider>
         <GameSocketProvider>
           <Chronometer />
+          <LeaveGameButton />
           <Outlet />
         </GameSocketProvider>
       </PlayerProvider>
