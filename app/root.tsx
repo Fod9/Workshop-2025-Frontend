@@ -13,6 +13,8 @@ import { PlayerProvider } from "~/context/player";
 import { GameProvider } from "./context/game";
 import { GameSocketProvider } from "~/context/game_socket";
 import Chronometer from "~/components/global/Chronometer";
+import { ChatProvider } from "./context/chat";
+import Chat from "./components/layout/Chat";
 import LeaveGameButton from "~/components/global/LeaveGameButton";
 
 export const links: Route.LinksFunction = () => [
@@ -53,9 +55,12 @@ export default function App() {
     <GameProvider>
       <PlayerProvider>
         <GameSocketProvider>
-          <Chronometer />
-          <LeaveGameButton />
-          <Outlet />
+          <ChatProvider>
+            <Chronometer />
+            <LeaveGameButton />
+            <Outlet />
+            <Chat />
+          </ChatProvider>
         </GameSocketProvider>
       </PlayerProvider>
     </GameProvider>
