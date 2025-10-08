@@ -1,0 +1,18 @@
+html, body {
+  height: 100%;
+}
+
+.africa-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    min-height: calc(100vh - 3.5rem);
+}
+
+.africa-screen.asia-clues {
+  background: url("/assets/asia_clues_bg.svg") center / cover no-repeat;
+}
+
+.asia-clues-image {
+  height: 47rem;
+}
