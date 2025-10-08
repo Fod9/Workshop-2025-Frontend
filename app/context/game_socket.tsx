@@ -2,6 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { resolveWebSocketUrl } from "~/services/websocket";
 import { useGame } from "~/context/game";
 import type { PartyPlayer } from "~/types/player";
+import { useNavigate } from "react-router";
+import { usePlayer } from "./player";
 
 type SocketStatus = "disconnected" | "connecting" | "connected" | "error";
 
@@ -19,12 +21,14 @@ type IncomingEvent = {
 };
 
 export function GameSocketProvider({ children }: { children: React.ReactNode }) {
-  const { gameId, players, addPlayer, removePlayer, setPlayerCount, setPlayers, setStage } = useGame();
+  const { gameId, addPlayer, removePlayer, setPlayerCount, setPlayers, setStage } = useGame();
   const [status, setStatus] = useState<SocketStatus>("disconnected");
   const [lastError, setLastError] = useState<Error | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const retryRef = useRef<number>(0);
   const reconnectTimer = useRef<number | null>(null);
+  const { player } = usePlayer();
+  const navigate = useNavigate();
 
   const connect = useCallback(() => {
     if (!gameId) return;
@@ -107,44 +111,27 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
     switch (event.type) {
       case "player_joined": {
-        console.log("Player joined", event.data);
         const p = toPartyPlayer(event.data);
         if (!p) break;
-        if (!players.some((pp) => pp.id === p.id)) {
-          addPlayer(p);
-        }
+        addPlayer(p);
         break;
       }
 
       case "player_left": {
-        const p = toPartyPlayer(event.data);
-        if (!p) break;
-        const existing = players.find((pp) => pp.id === p.id);
-        if (existing) removePlayer(existing);
+        const id = toId(event.data);
+        if (id) removePlayer({ id, name: "", continent: "", is_host: false });
         break;
       }
 
-      case "player_count": {
-        const n = toNumber(event.data);
-        if (typeof n === "number") setPlayerCount(n);
-        break;
-      }
-
-      case "players_sync": {
-        const list = Array.isArray(event.data) ? event.data : [];
-        const mapped: PartyPlayer[] = list
-          .map(toPartyPlayer)
-          .filter((v): v is PartyPlayer => v != null);
-        setPlayers(mapped);
-        setPlayerCount(mapped.length);
-        break;
-      }
 
       case "game_continued": {
         const obj = (event.data && typeof event.data === "object") ? (event.data as Record<string, unknown>) : {};
         const stageVal = obj.stage;
         if (typeof stageVal === "number") {
           setStage(stageVal);
+          if (player) {
+            navigate(`/${player.continent}/${stageVal}`);
+          }
         }
         const list = Array.isArray(obj.players) ? obj.players : [];
         const mapped: PartyPlayer[] = list
@@ -160,7 +147,7 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
       default:
         break;
     }
-  }, [addPlayer, players, removePlayer, setPlayerCount, setPlayers, setStage]);
+  }, [addPlayer, removePlayer, setPlayerCount, setPlayers, setStage]);
 
   const send = useCallback((data: unknown) => {
     const ws = wsRef.current;
@@ -190,6 +177,18 @@ function toPartyPlayer(raw: unknown): PartyPlayer | null {
   const continent = typeof r.continent === "string" ? r.continent.trim() : "Unknown";
   if (!id || !name) return null;
   return { id, name, continent, is_host: Boolean(r.is_host) };
+}
+
+function toId(raw: unknown): string | null {
+  if (typeof raw === "string") return raw;
+  if (typeof raw === "number") return String(raw);
+  if (raw && typeof raw === "object") {
+    const r = raw as Record<string, unknown>;
+    const v = r.id;
+    if (typeof v === "string") return v;
+    if (typeof v === "number") return String(v);
+  }
+  return null;
 }
 
 function toNumber(raw: unknown): number | null {

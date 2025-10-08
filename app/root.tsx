@@ -54,16 +54,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
 
-  // to delete
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.pathname === "/") {
-      navigate("/asia/1", { replace: true });
-    }
-  }, [location.pathname, navigate]);
-  //
 
   return (
     <GameProvider>

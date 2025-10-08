@@ -38,6 +38,21 @@ export default function PartyDetails() {
       console.error("continue game failed", e);
     }
   }
+
+  async function handleReturn() {
+    try {
+      if (!gameId) return;
+      if (!player?.id) return;
+      await backendService.post(`/game/leave`, {
+        game_id: gameId,
+        player_id: player.id,
+      });
+    } catch (e) {
+      console.error("leave game failed", e);
+    }
+    navigate(-1);
+  }
+
   const { player } = usePlayer();
 
 
@@ -92,7 +107,7 @@ export default function PartyDetails() {
             )}
           </div>
           <div className="party-actions">
-            <button type="button" className="join-game-button" onClick={() => navigate(-1)}>
+            <button type="button" className="join-game-button" onClick={handleReturn}>
               Retour
             </button>
             {player?.is_host && (
