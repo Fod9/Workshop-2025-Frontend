@@ -175,10 +175,9 @@ body {
 .middle-bidule,
 .bottom-bidule {
   cursor: crosshair;
-  user-select: none; /* évite le texte ou image sélectionnée */
+  user-select: none;
 }
 
-/* Symboles */
 .top-sym,
 .middle-sym,
 .bottom-sym {
@@ -196,7 +195,6 @@ body {
   animation: fadeIn 1s ease forwards;
 }
 
-/* Bloc console façon terminal */
 .console-overlay {
   font-family: "Source Code Pro", monospace;
   color: var(--color-bright-turquoise);
@@ -212,13 +210,13 @@ body {
 .console-line {
   opacity: 0;
   font-family: "Source Code Pro", monospace;
-  white-space: nowrap;          /* pas de saut de ligne automatique */
-  overflow: hidden;             /* masque le texte non encore "tapé" */
+  white-space: nowrap;
+  overflow: hidden;
   border-right: 2px solid var(--color-bright-turquoise);
   font-size: 1.2rem;
   margin: 0.2rem 0;
   display: inline-block;
-  width: 0;                     /* commence invisible (0 caractères visibles) */
+  width: 0;
   animation: typing 2s steps(var(--chars, 30), end) forwards,
              blink 0.8s step-end infinite;
 }
@@ -228,7 +226,6 @@ body {
 .delay-3 { --chars: 42; animation-delay: 3.5s, 5.5s; }
 .delay-4 { animation: fadeIn 1s ease forwards; animation-delay: 6s; opacity: 0; }
 
-/* Bouton console */
 .btn-console {
   display: block;
   margin: 1.8rem auto 0;
@@ -250,7 +247,6 @@ body {
   box-shadow: 0 0 15px var(--color-bright-turquoise);
 }
 
-/* Animations */
 @keyframes typing {
   from { width: 0; opacity: 1; }
   to { width: 100%; opacity: 1; }
