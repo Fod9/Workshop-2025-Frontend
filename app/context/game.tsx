@@ -9,6 +9,8 @@ interface GameContextValue {
     setGameId: (gameId: string | null) => void;
     stage: number;
     setStage: (stage: number) => void;
+    chronometer: number | null;
+    setChronometer: (seconds: number | null) => void;
     playerCount: number;
     setPlayerCount: (count: number) => void;
     players : PartyPlayer[];
@@ -26,6 +28,7 @@ type SavedGame = {
     gameId: string | null;
     stage: number;
     players: PartyPlayer[];
+    chronometer: number | null;
 };
 
 function readGameFromStorage(): SavedGame | null {
@@ -38,7 +41,8 @@ function readGameFromStorage(): SavedGame | null {
         const gameId = typeof data.gameId === "string" || data.gameId === null ? data.gameId ?? null : null;
         const stage = typeof data.stage === "number" ? data.stage : 0;
         const players = Array.isArray(data.players) ? data.players.filter(isPartyPlayer) : [];
-        return { code, gameId, stage, players };
+        const chronometer = typeof data.chronometer === "number" ? data.chronometer : null;
+        return { code, gameId, stage, players, chronometer };
     } catch {
         return null;
     }
@@ -69,6 +73,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     const [code, setCode] = useState<string | null>(() => saved?.code ?? null);
     const [gameId, setGameId] = useState<string | null>(() => saved?.gameId ?? null);
     const [stage, setStage] = useState<number>(() => saved?.stage ?? 0);
+    const [chronometer, setChronometer] = useState<number | null>(() => saved?.chronometer ?? null);
     const [playerCount, setPlayerCount] = useState<number>(0);
     const [players, setPlayer] = useState<PartyPlayer[]>(() => saved?.players ?? []);
     const navigate = useNavigate();
@@ -79,8 +84,8 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
     }, [players]);
 
     useEffect(() => {
-        writeGameToStorage({ code, gameId, stage, players });
-    }, [code, gameId, stage, players]);
+        writeGameToStorage({ code, gameId, stage, players, chronometer });
+    }, [code, gameId, stage, players, chronometer]);
 
     useEffect(() => {
         console.log("Stage changed:", stage);
@@ -103,7 +108,7 @@ export function GameProvider({ children }: { children: React.ReactNode }) {
         setPlayer((prevPlayers) => prevPlayers.filter(p => p.id !== id));
     }
     return (
-        <GameContext.Provider value={{ code, setCode, gameId, setGameId, stage, setStage, playerCount, setPlayerCount, players, addPlayer, removePlayer, removePlayerById, setPlayers }}>
+        <GameContext.Provider value={{ code, setCode, gameId, setGameId, stage, setStage, chronometer, setChronometer, playerCount, setPlayerCount, players, addPlayer, removePlayer, removePlayerById, setPlayers }}>
             {children}
         </GameContext.Provider>
     );

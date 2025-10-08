@@ -2,8 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { resolveWebSocketUrl } from "~/services/websocket";
 import { useGame } from "~/context/game";
 import type { PartyPlayer } from "~/types/player";
-import { useNavigate } from "react-router";
-import { usePlayer } from "./player";
+// import { useNavigate } from "react-router";
+// import { usePlayer } from "./player";
 
 type SocketStatus = "disconnected" | "connecting" | "connected" | "error";
 
@@ -21,14 +21,15 @@ type IncomingEvent = {
 };
 
 export function GameSocketProvider({ children }: { children: React.ReactNode }) {
-  const { gameId, addPlayer, removePlayer, setPlayerCount, setPlayers, setStage } = useGame();
+  const { gameId, addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer } = useGame();
   const [status, setStatus] = useState<SocketStatus>("disconnected");
   const [lastError, setLastError] = useState<Error | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const retryRef = useRef<number>(0);
   const reconnectTimer = useRef<number | null>(null);
-  const { player } = usePlayer();
-  const navigate = useNavigate();
+  const currentGameIdRef = useRef<string | null>(null);
+  // const { player } = usePlayer();
+  // const navigate = useNavigate();
 
   const connect = useCallback(() => {
     if (!gameId) return;
@@ -37,8 +38,19 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
     try {
       setStatus("connecting");
+      // Avoid duplicate connections for same gameId
+      if (wsRef.current && currentGameIdRef.current === gameId) {
+        const state = wsRef.current.readyState;
+        if (state === WebSocket.OPEN || state === WebSocket.CONNECTING) {
+          return;
+        }
+        try { wsRef.current.close(); } catch {}
+        wsRef.current = null;
+      }
+
       const ws = new WebSocket(url);
       wsRef.current = ws;
+      currentGameIdRef.current = gameId;
 
       ws.onopen = () => {
         setStatus("connected");
@@ -56,7 +68,10 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
       ws.onclose = () => {
         setStatus("disconnected");
-        scheduleReconnect();
+        // Only attempt reconnect if we still care about this gameId
+        if (currentGameIdRef.current === gameId) {
+          scheduleReconnect();
+        }
       };
     } catch (e) {
       setStatus("error");
@@ -79,10 +94,15 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     if (!gameId) {
       // Close if no game
+      if (reconnectTimer.current) {
+        window.clearTimeout(reconnectTimer.current);
+        reconnectTimer.current = null;
+      }
       if (wsRef.current) {
         try { wsRef.current.close(); } catch {}
         wsRef.current = null;
       }
+      currentGameIdRef.current = null;
       setStatus("disconnected");
       return;
     }
@@ -93,6 +113,7 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
         try { wsRef.current.close(); } catch {}
         wsRef.current = null;
       }
+      currentGameIdRef.current = null;
       setStatus("disconnected");
     };
   }, [gameId, connect]);
@@ -119,7 +140,7 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
       case "player_left": {
         const id = toId(event.data);
-        if (id) removePlayer({ id, name: "", continent: "", is_host: false });
+        if (id) removePlayerById(id);
         break;
       }
 
@@ -129,9 +150,6 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
         const stageVal = obj.stage;
         if (typeof stageVal === "number") {
           setStage(stageVal);
-          if (player) {
-            navigate(`/${player.continent}/${stageVal}`);
-          }
         }
         const list = Array.isArray(obj.players) ? obj.players : [];
         const mapped: PartyPlayer[] = list
@@ -144,10 +162,21 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
         break;
       }
 
+      case "chronometer": {
+        // Supports both { type, remaining } and { type, data: { remaining } }
+        const remFromRoot = (event as unknown as Record<string, unknown>).remaining;
+        const remFromData = (event.data && typeof event.data === "object") ? (event.data as Record<string, unknown>).remaining : undefined;
+        const value = normalizeNumber(remFromData ?? remFromRoot);
+        if (typeof value === "number") {
+          setChronometer(value);
+        }
+        break;
+      }
+
       default:
         break;
     }
-  }, [addPlayer, removePlayer, setPlayerCount, setPlayers, setStage]);
+  }, [addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer]);
 
   const send = useCallback((data: unknown) => {
     const ws = wsRef.current;
@@ -177,6 +206,15 @@ function toPartyPlayer(raw: unknown): PartyPlayer | null {
   const continent = typeof r.continent === "string" ? r.continent.trim() : "Unknown";
   if (!id || !name) return null;
   return { id, name, continent, is_host: Boolean(r.is_host) };
+}
+
+function normalizeNumber(raw: unknown): number | undefined {
+  if (typeof raw === "number" && Number.isFinite(raw)) return raw;
+  if (typeof raw === "string" && raw.trim() !== "") {
+    const n = Number(raw);
+    if (Number.isFinite(n)) return n;
+  }
+  return undefined;
 }
 
 function toId(raw: unknown): string | null {
