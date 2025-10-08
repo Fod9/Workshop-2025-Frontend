@@ -1,0 +1,93 @@
+body {
+  background-color: var(--color-soft-black);
+  background-size: 40px 40px;
+  background-image:
+    linear-gradient(to right, rgb(48, 48, 48) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(48, 48, 48) 1px, transparent 1px);
+}
+
+.afrique-screen {
+  padding-bottom: 4rem;
+}
+
+.console-text {
+  color: var(--color-bright-turquoise);
+  font-family: "Source Code Pro", monospace;
+  font-size: 1.1rem;
+}
+
+.consigne {
+  padding: 1rem 0 0 2rem;
+}
+
+.morse-box {
+  width: 80%;
+  margin: 2rem auto 1.5rem auto;
+  border: 1px dashed var(--color-bright-turquoise);
+  border-radius: 8px;
+  padding: 1.25rem 1rem;
+}
+
+.morse-clue {
+  margin: 0;
+  white-space: pre-wrap;
+  text-align: center;
+  letter-spacing: 2px;
+}
+
+.config-form {
+  width: 80%;
+  margin: 0 auto 2rem auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.5rem;
+}
+
+.config-input {
+  background: #3b3b3b;
+  border: 1px solid #6a6a6a;
+  color: var(--color-soft-white);
+  font-family: "Source Code Pro", monospace;
+  padding: 0.9rem 1rem;
+  border-radius: 8px;
+  outline: none;
+}
+
+.send-btn {
+  min-width: 48px;
+  padding: 0 1rem;
+  background: transparent;
+  border: 1px dashed #6a6a6a;
+  color: var(--color-soft-white);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.terminal-wrapper {
+  width: 80%;
+  margin: 1rem auto 0 auto;
+}
+
+.terminal-title {
+  color: var(--color-soft-white);
+  font-family: "Source Code Pro", monospace;
+  margin-bottom: 0.5rem;
+}
+
+.terminal-box {
+  background: #0e0f10;
+  border: 1px solid #1f1f1f;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+}
+
+.terminal-line {
+  font-family: "Source Code Pro", monospace;
+  color: var(--color-bright-turquoise);
+  margin: 0.25rem 0;
+}
+
+.terminal-line.error {
+  color: var(--color-red);
+}
+
