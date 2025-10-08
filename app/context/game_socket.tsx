@@ -2,8 +2,8 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { resolveWebSocketUrl } from "~/services/websocket";
 import { useGame } from "~/context/game";
 import type { PartyPlayer } from "~/types/player";
-// import { useNavigate } from "react-router";
-// import { usePlayer } from "./player";
+import { useNavigate } from "react-router";
+import { usePlayer } from "./player";
 
 type SocketStatus = "disconnected" | "connecting" | "connected" | "error";
 
@@ -21,15 +21,22 @@ type IncomingEvent = {
 };
 
 export function GameSocketProvider({ children }: { children: React.ReactNode }) {
-  const { gameId, addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer } = useGame();
+  const { gameId, addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage } = useGame();
   const [status, setStatus] = useState<SocketStatus>("disconnected");
   const [lastError, setLastError] = useState<Error | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const retryRef = useRef<number>(0);
   const reconnectTimer = useRef<number | null>(null);
   const currentGameIdRef = useRef<string | null>(null);
-  // const { player } = usePlayer();
-  // const navigate = useNavigate();
+  const { player } = usePlayer();
+  const navigate = useNavigate();
+
+
+  useEffect(() => {
+    if (player) {
+      navigate(`/${player.continent.toLowerCase()}/${stage}`);
+    }
+  }, [stage]);
 
   const connect = useCallback(() => {
     if (!gameId) return;
