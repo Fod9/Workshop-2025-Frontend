@@ -59,7 +59,7 @@ export default function AfriqueRound2() {
 
   return (
     <>
-      <Header title="- Afrique : La faune" />
+      <Header title="- Continent Afrique" secondTitle="Réparation de l'unité Afrique (biodiveristé et sécheresse)"/>
       <main className="afrique-screen">
         <div className="consigne">
           <p className="console-text">&gt; Le noeud de Gaia en charge du maintient de l’écosystème en Afrique a été corrompu et la config est désormais en morse</p>

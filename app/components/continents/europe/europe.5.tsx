@@ -4,7 +4,7 @@ import "~/styles/continents/afrique/africa2.css";
 export default function EuropeRound5() {
   return (
     <>
-      <Header title="- Europe : Fin de partie" />
+      <Header title="- Continent Europe" secondTitle="Fin de partie"/>
       <main className="afrique-screen">
         <div className="success-overlay">
           <div className="console-overlay">

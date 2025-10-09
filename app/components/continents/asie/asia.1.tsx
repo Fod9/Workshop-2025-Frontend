@@ -5,7 +5,7 @@ import AsiaRound from "./AsiaRound";
 export default function AsieRound1({ round }: { round: string | undefined }) {
   return (
     <>
-      <Header title="- Asie : Pollution de l'air" />
+      <Header title="- Continent Asie" secondTitle="Réparation de l'unité Asie (pollution de l'air)"/>
       <AsiaRound />
     </>
   );

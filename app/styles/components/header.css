@@ -1,11 +1,16 @@
 .header-container {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: space-between;
     gap: 0.5rem;
     height: 3.5rem;
     background-color: var(--color-dark-grey);
     padding: 0 1rem;
+}
+
+.left-part {
+    display: flex;
+    align-items: center;
 }
 
 .header-container .logo {
@@ -19,4 +24,13 @@
     color: var(--color-soft-white);
     font-size: 1.2rem;
     font-weight: 500;
+    padding-left: 0.5rem;
+}
+
+.header-second-title {
+    font-family: "Source Code Pro", sans-serif;
+    color: var(--color-bright-turquoise);
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: end;
 }

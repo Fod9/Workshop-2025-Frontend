@@ -2,8 +2,10 @@ import { useState } from "react";
 import Header from "~/components/layout/Header";
 import "~/styles/continents/afrique/africa2.css";
 import { useChat as useChatContext } from "~/context/chat";
+import Info from "../../Info";
 
 export default function AsiaRound4() {
+  const [showInfo, setShowInfo] = useState(true);
   const { sendMessage } = useChatContext();
   const [d, setD] = useState("");
   const [tested, setTested] = useState(false);
@@ -16,7 +18,13 @@ export default function AsiaRound4() {
 
   return (
     <>
-      <Header title="- Asie : Énigme 4 (Textile)" />
+      <Header title="- Continent Asie" secondTitle="Réparation de l'unité Amérique (surproduction et déchets)"/>
+      {showInfo && (
+        <Info
+            continent="America"
+            onContinue={() => setShowInfo(false)}
+        />
+      )}
       <main className="afrique-screen">
         <div className="consigne">
           <p className="console-text">&gt; Trouvez d dans la formule.</p>

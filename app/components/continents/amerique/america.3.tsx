@@ -1,10 +1,20 @@
+import React, { useState } from "react";
 import Header from "~/components/layout/Header";
 import "~/styles/continents/afrique/africa2.css";
+import Info from "../../Info";
 
 export default function AmericaRound3() {
+  const [showInfo, setShowInfo] = useState(true);
+  
   return (
     <>
-      <Header title="- Amérique : Règles d'allumage" />
+      <Header title="- Continent Amérique" secondTitle="Réparation de l'unité Europe (production d'énergie)"/>
+      {showInfo && (
+        <Info
+            continent="Europe"
+            onContinue={() => setShowInfo(false)}
+        />
+      )}
       <main className="afrique-screen">
         <div className="consigne">
           <p className="console-text">&gt; Transmets ces contraintes à l'équipe Europe.</p>

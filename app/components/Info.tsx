@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import "../../../styles/asia.css";
+import "../styles/asia.css";
 
 type Continent = "Asia" | "Europe" | "Africa" | "America";
 
@@ -41,8 +41,8 @@ export default function Info({
 
   const lines = LINES[continent];
 
-  const typingDelay = 25; // ms per char
-  const linePause = 500;  // pause between lines
+  const typingDelay = 25;
+  const linePause = 500;
 
   const [typed, setTyped] = useState<string[]>(() =>
     Array(lines.length).fill("")
@@ -50,16 +50,14 @@ export default function Info({
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
 
-  // Reset when continent changes
   useEffect(() => {
     setTyped(Array(lines.length).fill(""));
     setLineIndex(0);
     setCharIndex(0);
-  }, [continent]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [continent]);
 
-  // Typewriter (sequential)
   useEffect(() => {
-    if (lineIndex >= lines.length) return; // done
+    if (lineIndex >= lines.length) return;
 
     const line = lines[lineIndex];
 
@@ -96,7 +94,7 @@ export default function Info({
 
         {allDone && (
           <button
-            className="btn-console red"
+            className="red-btn-console"
             onClick={() => {
               if (!called.current) {
                 called.current = true;

@@ -82,7 +82,7 @@ export default function EuropeRound3() {
 
   return (
     <>
-      <Header title="- Europe : Réseau d’ampoules" />
+      <Header title="- Continent Europe" secondTitle="Réparation de l'unité Europe (production d'énergie)"/>
       <main className="europe-lamps-screen">
         <div className="consigne">
           <p className="rule">Consigne: allume/éteins les ampoules une par une pour obtenir le bon schéma.</p>

@@ -107,7 +107,7 @@ export default function AmericaRound4() {
 
   return (
     <>
-      <Header title="- Amérique : Surproduction (Collecteur)" />
+      <Header title="- Continent Amérique" secondTitle="Réparation de l'unité Amérique (surproduction et déchets)"/>
       <main className="afrique-screen">
         <div className="consigne">
           <p className="console-text">&gt; Le collecteur saisit les 3 formules complètes reçues via le chat.</p>

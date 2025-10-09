@@ -4,7 +4,7 @@ import AsiaSuccess from "./AsiaSuccess";
 import { backendService } from "~/services/backend";
 import type { ApiSuccess, GameRead } from "~/types/backend";
 import { useGame } from "~/context/game";
-import Info from "./Info";
+import Info from "../../Info";
 
 type Point = { x: number; y: number };
 type Connection = { from: string; to: string };
