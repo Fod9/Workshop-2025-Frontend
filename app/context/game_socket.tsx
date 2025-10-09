@@ -158,24 +158,23 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
       }
 
       case "player_left": {
-        const id = toId(event.data);
-        console.log("player_left", id, stage);
-        console.log("data:", event.data);
-        if (id) {
+        const player = toPartyPlayer(event.data);
+
+        if (player) {
           try {
-            const leftPlayer = players.find(p => p.id === id);
-            const name = leftPlayer?.name ?? "Unknown";
+            const leftPlayer = players.find(p => p.id === player.id);
+
             const message = {
               id: `${Date.now()}-${Math.random()}`,
               playerId: "",
               playerName: "",
-              message: `Le joueur ${name} a quitté la partie`,
+              message: `Le joueur ${player.name} a quitté la partie`,
               timestamp: new Date(),
               system: true,
             };
             window.dispatchEvent(new CustomEvent('chat_message', { detail: message }));
           } catch {}
-          removePlayerById(id);
+          removePlayerById(player.id);
         }
         
         // If the game has started, force everyone to leave
