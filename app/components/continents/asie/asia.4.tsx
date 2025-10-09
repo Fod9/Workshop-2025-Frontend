@@ -7,14 +7,17 @@ import Info from "../../Info";
 export default function AsiaRound4() {
   const [showInfo, setShowInfo] = useState(true);
   const { sendMessage } = useChatContext();
-  const [d, setD] = useState("");
+  const [d1, setD1] = useState("");
+  const [d2, setD2] = useState("");
   const [tested, setTested] = useState(false);
 
   const base = 132;
   const objective = 40;
-  const parsed = d.trim() === '' ? NaN : Number(d.replace(',', '.'));
-  const result = base - (isFinite(parsed) ? parsed : 0);
-  const ok = isFinite(parsed) && result === objective;
+  const p1 = d1.trim() === '' ? NaN : Number(d1.replace(',', '.'));
+  const p2 = d2.trim() === '' ? NaN : Number(d2.replace(',', '.'));
+  const sum = (isFinite(p1) ? p1 : 0) + (isFinite(p2) ? p2 : 0);
+  const result = base - sum;
+  const ok = isFinite(p1) && isFinite(p2) && result === objective;
 
   return (
     <>
@@ -33,20 +36,21 @@ export default function AsiaRound4() {
           <h3 className="terminal-title">Textile</h3>
           <div className="terminal-box">
             <p className="terminal-line">Production: 132 Mds t/an — Objectif: 40 Mds t/an</p>
-            <p className="terminal-line">Formule: objectif = base − d</p>
-            <div className="config-form">
-              <input className="config-input" placeholder="d (déchets)" value={d} onChange={(e) => { setD(e.target.value); setTested(false); }} />
+            <p className="terminal-line">Formule: objectif = base − (d1 + d2)</p>
+            <div className="config-form" style={{ gridTemplateColumns: '1fr 1fr auto' }}>
+              <input className="config-input" placeholder="d1" value={d1} onChange={(e) => { setD1(e.target.value); setTested(false); }} />
+              <input className="config-input" placeholder="d2" value={d2} onChange={(e) => { setD2(e.target.value); setTested(false); }} />
               <button className="send-btn" onClick={() => setTested(true)}>Tester</button>
             </div>
             {tested && (
               <p className={`terminal-line ${ok ? '' : 'error'}`}>
-                Résultat: {isFinite(parsed) ? result : '—'} Mds t/an {ok ? '✓' : '✗'}
+                Résultat: {isFinite(p1) && isFinite(p2) ? result : '—'} Mds t/an {ok ? '✓' : '✗'}
               </p>
             )}
+            <button className="send-btn" onClick={() => sendMessage(`Formule Textile: objectif = base − (${d1 || 'd1'} + ${d2 || 'd2'})`)}>Envoyer au collecteur</button>
           </div>
         </div>
       </main>
     </>
   );
 }
-
