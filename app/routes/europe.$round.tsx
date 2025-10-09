@@ -4,6 +4,7 @@ import EuropeRound1 from "../components/continents/europe/europe.1";
 import EuropeRound3 from "../components/continents/europe/europe.3";
 import EuropeRound2 from "../components/continents/europe/europe.2";
 import EuropeRound4 from "../components/continents/europe/europe.4";
+import EuropeRound5 from "../components/continents/europe/europe.5";
 
 export default function EuropeRound() {
   const { round } = useParams<{ round: string }>();
@@ -17,6 +18,8 @@ export default function EuropeRound() {
       return <EuropeRound3 />;
     case "4":
       return <EuropeRound4 />;
+    case "5":
+      return <EuropeRound5 />;
     default:
       return (
         <>

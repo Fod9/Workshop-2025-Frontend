@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useGame } from "~/context/game";
+import "../../styles/components/chronometer.css";
 
 function pad2(n: number) {
   return n < 10 ? `0${n}` : String(n);
@@ -42,23 +43,14 @@ export default function Chronometer() {
   // Only show during an active game route when we have a gameId
   if (!gameId || stage <= 0) return null;
 
+  const isDanger = display <= 10;
+  const isWarning = !isDanger && display <= 30;
+
   return (
-    <div style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      height: "44px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "rgba(0,0,0,0.75)",
-      color: "#fff",
-      fontWeight: 600,
-      zIndex: 1000,
-      letterSpacing: "0.5px",
-    }}>
-      {formatHMS(display)}
+    <div className="chronometer">
+      <div className={`chronometer-badge ${isDanger ? 'danger' : isWarning ? 'warning' : ''}`}>
+        {formatHMS(display)}
+      </div>
     </div>
   );
 }

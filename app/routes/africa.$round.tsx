@@ -4,6 +4,7 @@ import AfriqueRound1 from "../components/continents/afrique/africa.1";
 import AfriqueRound2 from "../components/continents/afrique/africa.2";
 import AfriqueRound3 from "../components/continents/afrique/africa.3";
 import AfriqueRound4 from "../components/continents/afrique/africa.4";
+import AfriqueRound5 from "../components/continents/afrique/africa.5";
 
 export default function AfricaRound() {
   const { round } = useParams<{ round: string }>();
@@ -17,6 +18,8 @@ export default function AfricaRound() {
       return <AfriqueRound3 />;
     case "4":
       return <AfriqueRound4 />;
+    case "5":
+      return <AfriqueRound5 />;
     default:
       return (
         <>

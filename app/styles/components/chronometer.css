@@ -1,0 +1,35 @@
+.chronometer {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 1100;
+}
+
+.chronometer-badge {
+  min-width: 120px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(15, 17, 19, 0.85);
+  border: 1px solid #1f1f1f;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  color: var(--color-soft-white);
+  font-weight: 700;
+  letter-spacing: 0.75px;
+  text-align: center;
+  backdrop-filter: blur(6px);
+}
+
+.chronometer-badge.warning {
+  box-shadow: 0 0 0 2px rgba(253, 145, 56, 0.7), 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.chronometer-badge.danger {
+  box-shadow: 0 0 0 2px rgba(210, 74, 74, 0.8), 0 6px 24px rgba(210, 74, 74, 0.25);
+  animation: chronoPulse 1s ease-in-out infinite;
+}
+
+@keyframes chronoPulse {
+  0%, 100% { transform: translateZ(0) scale(1); }
+  50% { transform: translateZ(0) scale(1.03); }
+}
+
