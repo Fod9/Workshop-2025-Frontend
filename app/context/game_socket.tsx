@@ -21,7 +21,7 @@ type IncomingEvent = {
 };
 
 export function GameSocketProvider({ children }: { children: React.ReactNode }) {
-  const { gameId, addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage, setCode, setGameId } = useGame();
+  const { gameId, addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage, setCode, setGameId, players } = useGame();
   const [status, setStatus] = useState<SocketStatus>("disconnected");
   const [lastError, setLastError] = useState<Error | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
@@ -142,6 +142,18 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
         const p = toPartyPlayer(event.data);
         if (!p) break;
         addPlayer(p);
+        // Also push a small chat info message
+        try {
+          const message = {
+            id: `${Date.now()}-${Math.random()}`,
+            playerId: "",
+            playerName: "",
+            message: `Le joueur ${p.name} a rejoint la partie`,
+            timestamp: new Date(),
+            system: true,
+          };
+          window.dispatchEvent(new CustomEvent('chat_message', { detail: message }));
+        } catch {}
         break;
       }
 
@@ -149,7 +161,22 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
         const id = toId(event.data);
         console.log("player_left", id, stage);
         console.log("data:", event.data);
-        if (id) removePlayerById(id);
+        if (id) {
+          try {
+            const leftPlayer = players.find(p => p.id === id);
+            const name = leftPlayer?.name ?? "Unknown";
+            const message = {
+              id: `${Date.now()}-${Math.random()}`,
+              playerId: "",
+              playerName: "",
+              message: `Le joueur ${name} a quitté la partie`,
+              timestamp: new Date(),
+              system: true,
+            };
+            window.dispatchEvent(new CustomEvent('chat_message', { detail: message }));
+          } catch {}
+          removePlayerById(id);
+        }
         
         // If the game has started, force everyone to leave
         if (stage > 0) {
@@ -218,7 +245,7 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
       default:
         break;
     }
-  }, [addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage, setCode, setGameId, clearPlayer, navigate]);
+  }, [addPlayer, removePlayerById, setPlayerCount, setPlayers, setStage, setChronometer, stage, setCode, setGameId, clearPlayer, navigate, players]);
 
   const send = useCallback((data: unknown) => {
     const ws = wsRef.current;

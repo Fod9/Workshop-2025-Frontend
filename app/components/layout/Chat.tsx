@@ -132,6 +132,13 @@ export default function Chat() {
                 <>
                     <div className="chat-messages">
                         {messages.map((message) => {
+                            if (message.system) {
+                                return (
+                                    <div key={message.id} className="chat-notice">
+                                        {message.message}
+                                    </div>
+                                );
+                            }
                             const isSelf = player?.id === message.playerId;
                             const sender = isSelf ? player : playersById.get(message.playerId);
                             const continentName = sender?.continent ?? "Unknown";

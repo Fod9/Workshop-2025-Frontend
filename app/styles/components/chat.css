@@ -40,6 +40,16 @@
   flex-direction: row-reverse;
 }
 
+/* System notice (Instagram-like) */
+.chat-notice {
+  align-self: center;
+  background: #f1f1f1;
+  color: #666;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+}
+
 .chat-avatar {
   width: 28px;
   height: 28px;

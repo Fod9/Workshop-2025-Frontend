@@ -9,6 +9,7 @@ export interface ChatMessage {
   playerName: string;
   message: string;
   timestamp: Date;
+  system?: boolean; // true for system/notice messages
 }
 
 interface ChatContextValue {
