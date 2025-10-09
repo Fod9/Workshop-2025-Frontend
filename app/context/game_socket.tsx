@@ -147,15 +147,16 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
       case "player_left": {
         const id = toId(event.data);
+        console.log("player_left", id, stage);
+        console.log("data:", event.data);
         if (id) removePlayerById(id);
+        
         // If the game has started, force everyone to leave
         if (stage > 0) {
-          try {
-            if (typeof window !== "undefined") {
-              window.sessionStorage.removeItem("workshop:game");
-              window.sessionStorage.removeItem("workshop:player");
-            }
-          } catch {}
+          if (typeof window !== "undefined") {
+            window.sessionStorage.removeItem("workshop:game");
+            window.sessionStorage.removeItem("workshop:player");
+          }
           setCode(null);
           setGameId(null);
           setPlayers([]);

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import Header from "../components/layout/Header";
 import EuropeRound1 from "../components/continents/europe/europe.1";
+import EuropeRound3 from "../components/continents/europe/europe.3";
 import EuropeRound2 from "../components/continents/europe/europe.2";
 
 export default function EuropeRound() {
@@ -11,6 +12,8 @@ export default function EuropeRound() {
       return <EuropeRound1 />;
     case "2":
       return <EuropeRound2 />;
+    case "3":
+      return <EuropeRound3 />;
     default:
       return (
         <>
