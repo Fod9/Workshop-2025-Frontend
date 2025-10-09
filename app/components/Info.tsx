@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "../styles/asia.css";
+import { useTypingSound } from "../hooks/useTypingSound";
 
 type Continent = "Asia" | "Europe" | "Africa" | "America";
 
@@ -38,6 +39,7 @@ export default function Info({
   onContinue: () => void;
 }) {
   const called = useRef(false);
+  // play typing sound while lines are being typed
 
   const lines = LINES[continent];
 
@@ -50,11 +52,15 @@ export default function Info({
   const [lineIndex, setLineIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
 
+  // play typing sound strictly while characters are appearing (pauses during line gaps)
+  const isTyping = lineIndex < lines.length && charIndex < (lines[lineIndex]?.length ?? 0);
+  useTypingSound(isTyping, { src: "/assets/typing_morse.mp3" });
+
   useEffect(() => {
-    setTyped(Array(lines.length).fill(""));
     setLineIndex(0);
     setCharIndex(0);
   }, [continent]);
+
 
   useEffect(() => {
     if (lineIndex >= lines.length) return;
@@ -79,6 +85,8 @@ export default function Info({
       return () => clearTimeout(t);
     }
   }, [lineIndex, charIndex, lines, typingDelay, linePause]);
+
+  // (sound is handled by useTypingSound)
 
   const allDone = lineIndex >= lines.length;
 

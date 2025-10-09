@@ -5,18 +5,23 @@ import "~/styles/continents/afrique/africa2.css";
 import { backendService } from "~/services/backend";
 import type { ApiSuccess, GameRead } from "~/types/backend";
 import { useGame } from "~/context/game";
+import Info from "../../Info";
+import { useConsoleTypingSound } from "~/hooks/useConsoleTypingSound";
 
 const EXPECTED_PHRASE = "PRIORISER LA FAUNE, REDUIRE LA SECHERESSE.";
 
 const MORSE_CLUE = "·−−· ·−· ·· −−− ·−· ·· ··· · ·−·  ·−·· ·−  ··−· ·− ··− −· · −−··−−  ·−· ··−·· −·· ··− ·· ·−· ·  ·−·· ·−  ··· ··−·· −·−· ···· · ·−· · ··· ··· · ·−·−·− ";
 
 export default function AfriqueRound2() {
+  const [showInfo, setShowInfo] = useState(true);
   const [value, setValue] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [accepted, setAccepted] = useState<boolean | null>(null);
   const { gameId, setStage, setPlayers } = useGame();
   const continuedRef = useRef(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  useConsoleTypingSound(overlayRef, undefined, Boolean(showOverlay && accepted));
 
   async function continueGameOnce() {
     if (continuedRef.current) return;
@@ -60,6 +65,9 @@ export default function AfriqueRound2() {
   return (
     <>
       <Header title="- Continent Afrique" secondTitle="Réparation de l'unité Afrique (biodiveristé et sécheresse)"/>
+      {showInfo && (
+        <Info continent="Africa" onContinue={() => setShowInfo(false)} />
+      )}
       <main className="afrique-screen">
         <div className="consigne">
           <p className="console-text">&gt; Le noeud de Gaia en charge du maintient de l’écosystème en Afrique a été corrompu et la config est désormais en morse</p>
@@ -84,7 +92,7 @@ export default function AfriqueRound2() {
               setValue(noAccents);
             }}
           />
-          <button className="send-btn" aria-label="Envoyer" type="submit"></button>
+          <button className="send-btn" aria-label="Envoyer" type="submit">Envoyer</button>
         </form>
 
         {submitted && (
@@ -105,7 +113,7 @@ export default function AfriqueRound2() {
 
         {showOverlay && accepted && (
           <div className="success-overlay" role="dialog" aria-modal="true">
-            <div className="console-overlay">
+            <div className="console-overlay" ref={overlayRef}>
               <p className="console-line delay-1">&gt; Déchiffrement terminé...</p>
               <p className="console-line delay-2">&gt; Configuration transmise au noeud Afrique.</p>
               <p className="console-line delay-3 green">&gt; Biodiversité priorisée, sécheresse en baisse.</p>

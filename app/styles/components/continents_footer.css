@@ -1,0 +1,39 @@
+.continents-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  z-index: 1050;
+  pointer-events: none; /* non bloquant pour les clics du jeu */
+}
+
+.continent-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  filter: grayscale(0.2);
+  transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+}
+
+.continent-item img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.continent-item .label {
+  font-size: 10px;
+  color: rgba(255,255,255,0.8);
+}
+
+.continent-item.inactive { opacity: 0.25; }
+.continent-item.active { opacity: 1; filter: none; transform: translateY(-2px); }
+

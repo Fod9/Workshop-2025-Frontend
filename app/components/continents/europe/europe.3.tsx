@@ -5,6 +5,8 @@ import "~/styles/continents/afrique/africa2.css"; // reuse overlay/console style
 import { backendService } from "~/services/backend";
 import type { ApiSuccess, GameRead } from "~/types/backend";
 import { useGame } from "~/context/game";
+import { useConsoleTypingSound } from "~/hooks/useConsoleTypingSound";
+import Info from "../../Info";
 
 type Grid = boolean[][];
 
@@ -19,6 +21,7 @@ export default function EuropeRound3() {
   const [grid, setGrid] = useState<Grid>(() => makeGrid(SIZE));
   const [isSuccess, setIsSuccess] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const [showInfo, setShowInfo] = useState(true);
   const continuedRef = useRef(false);
 
   const { gameId, setStage, setPlayers } = useGame();
@@ -80,9 +83,15 @@ export default function EuropeRound3() {
     }
   }, [isTargetState, isSuccess]);
 
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  useConsoleTypingSound(overlayRef, undefined, showOverlay);
+
   return (
     <>
       <Header title="- Continent Europe" secondTitle="Réparation de l'unité Europe (production d'énergie)"/>
+      {showInfo && (
+        <Info continent="Europe" onContinue={() => setShowInfo(false)} />
+      )}
       <main className="europe-lamps-screen">
         <div className="consigne">
           <p className="rule">Consigne: allume/éteins les ampoules une par une pour obtenir le bon schéma.</p>
@@ -114,7 +123,7 @@ export default function EuropeRound3() {
 
         {showOverlay && (
           <div className="success-overlay" role="dialog" aria-modal="true">
-            <div className="console-overlay">
+            <div className="console-overlay" ref={overlayRef}>
               <p className="console-line delay-1">&gt; Réseau stabilisé...</p>
               <p className="console-line delay-2">&gt; Toutes les ampoules sont allumées.</p>
               <p className="console-line delay-3 green">&gt; Mission accomplie, passe à la suite.</p>

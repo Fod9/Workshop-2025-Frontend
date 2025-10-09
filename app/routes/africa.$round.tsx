@@ -5,31 +5,24 @@ import AfriqueRound2 from "../components/continents/afrique/africa.2";
 import AfriqueRound3 from "../components/continents/afrique/africa.3";
 import AfriqueRound4 from "../components/continents/afrique/africa.4";
 import AfriqueRound5 from "../components/continents/afrique/africa.5";
+import ContinentsFooter from "../components/layout/ContinentsFooter";
 
 export default function AfricaRound() {
   const { round } = useParams<{ round: string }>();
-  
+  let View: JSX.Element;
   switch (round) {
-    case "1":
-      return <AfriqueRound1 round={round} />;
-    case "2":
-      return <AfriqueRound2 />;
-    case "3":
-      return <AfriqueRound3 />;
-    case "4":
-      return <AfriqueRound4 />;
-    case "5":
-      return <AfriqueRound5 />;
+    case "1": View = <AfriqueRound1 round={round} />; break;
+    case "2": View = <AfriqueRound2 />; break;
+    case "3": View = <AfriqueRound3 />; break;
+    case "4": View = <AfriqueRound4 />; break;
+    case "5": View = <AfriqueRound5 />; break;
     default:
-      return (
+      View = (
         <>
           <Header title="- Afrique" />
-          <main className="africa-screen">
-            <div className="container">
-              <p>Round inconnu</p>
-            </div>
-          </main>
+          <main className="africa-screen"><div className="container"><p>Round inconnu</p></div></main>
         </>
       );
   }
+  return <>{View}<ContinentsFooter active="Afrique" /></>;
 }

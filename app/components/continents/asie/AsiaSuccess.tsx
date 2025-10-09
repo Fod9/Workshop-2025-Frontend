@@ -1,13 +1,16 @@
 import { useRef } from "react";
 import "../../../styles/asia.css";
+import { useConsoleTypingSound } from "~/hooks/useConsoleTypingSound";
 
 export default function AsiaSuccess({ onContinue }: { onContinue: () => void }) {
   const called = useRef(false);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  useConsoleTypingSound(overlayRef, undefined, true);
 
   return (
     <>
       <div className="success-overlay" role="dialog" aria-modal="true">
-        <div className="console-overlay">
+        <div className="console-overlay" ref={overlayRef}>
           <p className="console-line delay-1">
             &gt; Calcul terminé...
           </p>

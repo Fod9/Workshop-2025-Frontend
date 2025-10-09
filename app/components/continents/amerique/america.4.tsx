@@ -4,6 +4,8 @@ import "~/styles/continents/afrique/africa2.css";
 import { backendService } from "~/services/backend";
 import type { ApiSuccess, GameRead } from "~/types/backend";
 import { useGame } from "~/context/game";
+import Info from "../../Info";
+import { useConsoleTypingSound } from "~/hooks/useConsoleTypingSound";
 
 function normaliseNumberText(s: string): string {
   // Replace comma by dot, trim spaces
@@ -84,6 +86,7 @@ function parseSubtractProduct(input: string): number | null {
 export default function AmericaRound4() {
   const { gameId, setStage, setPlayers } = useGame();
   const continuedRef = useRef(false);
+  const [showInfo, setShowInfo] = useState(true);
 
   const [foodFormula, setFoodFormula] = useState("");
   const [textileFormula, setTextileFormula] = useState("");
@@ -94,6 +97,8 @@ export default function AmericaRound4() {
   const [cosmOk, setCosmOk] = useState<boolean | null>(null);
 
   const [showOverlay, setShowOverlay] = useState(false);
+  const overlayRef = useRef<HTMLDivElement | null>(null);
+  useConsoleTypingSound(overlayRef, undefined, showOverlay);
 
   const testFood = useCallback(() => {
     const r = parseRatioFormula(foodFormula);
@@ -152,6 +157,9 @@ export default function AmericaRound4() {
   return (
     <>
       <Header title="- Continent Amérique" secondTitle="Réparation de l'unité Amérique (surproduction et déchets)"/>
+      {showInfo && (
+        <Info continent="America" onContinue={() => setShowInfo(false)} />
+      )}
       <main className="afrique-screen">
         <div className="consigne">
           <p className="console-text">&gt; Le collecteur saisit les 3 formules complètes reçues via le chat.</p>
@@ -204,12 +212,12 @@ export default function AmericaRound4() {
         </div>
 
         <div className="morse-box" role="group" aria-label="Validation">
-          <button className="validate-btn" onClick={handleValidateAll} disabled={!canValidate}>Valider les 3 formules</button>
+          <button className="send-btn" onClick={handleValidateAll} disabled={!canValidate}>Valider les 3 formules</button>
         </div>
 
         {showOverlay && (
           <div className="success-overlay">
-            <div className="console-overlay">
+            <div className="console-overlay" ref={overlayRef}>
               <div className="console-line delay-1">&gt; Formules validées.</div>
               <div className="console-line delay-2">&gt; Surproduction corrigée.</div>
               <div className="console-line delay-3">&gt; Passage à l'étape suivante...</div>

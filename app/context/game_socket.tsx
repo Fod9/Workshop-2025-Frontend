@@ -27,6 +27,7 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
   const wsRef = useRef<WebSocket | null>(null);
   const retryRef = useRef<number>(0);
   const reconnectTimer = useRef<number | null>(null);
+  const connectWatchdog = useRef<number | null>(null);
   const currentGameIdRef = useRef<string | null>(null);
   const { player, clearPlayer } = usePlayer();
   const navigate = useNavigate();
@@ -60,6 +61,10 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
       currentGameIdRef.current = gameId;
 
       ws.onopen = () => {
+        if (connectWatchdog.current) {
+          window.clearTimeout(connectWatchdog.current);
+          connectWatchdog.current = null;
+        }
         setStatus("connected");
         setLastError(null);
         retryRef.current = 0;
@@ -71,15 +76,31 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
       ws.onerror = () => {
         setStatus("error");
+        try { ws.close(); } catch {}
       };
 
       ws.onclose = () => {
+        if (connectWatchdog.current) {
+          window.clearTimeout(connectWatchdog.current);
+          connectWatchdog.current = null;
+        }
         setStatus("disconnected");
         // Only attempt reconnect if we still care about this gameId
         if (currentGameIdRef.current === gameId) {
           scheduleReconnect();
         }
       };
+
+      // Watchdog: if still not open after 7s, force close to trigger reconnect
+      if (connectWatchdog.current) {
+        window.clearTimeout(connectWatchdog.current);
+      }
+      connectWatchdog.current = window.setTimeout(() => {
+        const cur = wsRef.current;
+        if (cur && cur.readyState !== WebSocket.OPEN) {
+          try { cur.close(); } catch {}
+        }
+      }, 7000);
     } catch (e) {
       setStatus("error");
       setLastError(e instanceof Error ? e : new Error("WebSocket error"));
@@ -116,6 +137,10 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
     connect();
     return () => {
       if (reconnectTimer.current) window.clearTimeout(reconnectTimer.current);
+      if (connectWatchdog.current) {
+        window.clearTimeout(connectWatchdog.current);
+        connectWatchdog.current = null;
+      }
       if (wsRef.current) {
         try { wsRef.current.close(); } catch {}
         wsRef.current = null;
@@ -124,6 +149,21 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
       setStatus("disconnected");
     };
   }, [gameId, connect]);
+
+  // Visibility/online hint to reconnect
+  useEffect(() => {
+    const hint = () => {
+      if (!gameId) return;
+      const state = wsRef.current?.readyState;
+      if (state !== WebSocket.OPEN) connect();
+    };
+    window.addEventListener('visibilitychange', hint);
+    window.addEventListener('online', hint);
+    return () => {
+      window.removeEventListener('visibilitychange', hint);
+      window.removeEventListener('online', hint);
+    };
+  }, [connect, gameId]);
 
   const onMessage = useCallback((raw: unknown) => {
     let event: IncomingEvent | null = null;
@@ -159,22 +199,22 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
       case "player_left": {
         const player = toPartyPlayer(event.data);
-
-        if (player) {
+        const id = player?.id ?? toId(event.data);
+        if (id) {
           try {
-            const leftPlayer = players.find(p => p.id === player.id);
-
+            const leftPlayer = players.find(p => p.id === id);
+            const name = player?.name ?? leftPlayer?.name ?? "inconnu";
             const message = {
               id: `${Date.now()}-${Math.random()}`,
               playerId: "",
               playerName: "",
-              message: `Le joueur ${player.name} a quitté la partie`,
+              message: `Le joueur ${name} a quitté la partie`,
               timestamp: new Date(),
               system: true,
             };
             window.dispatchEvent(new CustomEvent('chat_message', { detail: message }));
           } catch {}
-          removePlayerById(player.id);
+          removePlayerById(id);
         }
         
         // If the game has started, force everyone to leave

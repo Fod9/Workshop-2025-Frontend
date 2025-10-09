@@ -5,31 +5,24 @@ import EuropeRound3 from "../components/continents/europe/europe.3";
 import EuropeRound2 from "../components/continents/europe/europe.2";
 import EuropeRound4 from "../components/continents/europe/europe.4";
 import EuropeRound5 from "../components/continents/europe/europe.5";
+import ContinentsFooter from "../components/layout/ContinentsFooter";
 
 export default function EuropeRound() {
   const { round } = useParams<{ round: string }>();
-
+  let View: JSX.Element;
   switch (round) {
-    case "1":
-      return <EuropeRound1 />;
-    case "2":
-      return <EuropeRound2 />;
-    case "3":
-      return <EuropeRound3 />;
-    case "4":
-      return <EuropeRound4 />;
-    case "5":
-      return <EuropeRound5 />;
+    case "1": View = <EuropeRound1 />; break;
+    case "2": View = <EuropeRound2 />; break;
+    case "3": View = <EuropeRound3 />; break;
+    case "4": View = <EuropeRound4 />; break;
+    case "5": View = <EuropeRound5 />; break;
     default:
-      return (
+      View = (
         <>
           <Header title="- Europe : Production d'énergie" />
-          <main className="europe-screen">
-            <div className="container">
-              <p>Round inconnu</p>
-            </div>
-          </main>
+          <main className="europe-screen"><div className="container"><p>Round inconnu</p></div></main>
         </>
       );
   }
+  return <>{View}<ContinentsFooter active="Europe" /></>;
 }

@@ -8,7 +8,7 @@ export default function AmericaRound1() {
   
   return (
     <>
-      <Header title="- Amérique : Surproduction et déchets" />
+      <Header title="- Continent Amérique" secondTitle="Réparation de l'unité Asie (pollution de l'air)"/>
       {showInfo && (
           <Info
               continent="Asia"

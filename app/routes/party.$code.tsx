@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocation, useNavigate, useParams } from "react-router";
 import type { PartyPlayer } from "~/types/player";
 import type { PartySummary } from "~/types/party";
@@ -79,6 +80,13 @@ export default function PartyDetails() {
       </>
     );
   }
+
+  // Seed context players from navigation state to ensure live WS updates merge correctly
+  useEffect(() => {
+    if (party && ctxPlayers.length === 0 && Array.isArray(party.players) && party.players.length) {
+      setPlayers(party.players);
+    }
+  }, [party, ctxPlayers.length, setPlayers]);
 
   const players: PartyPlayer[] = ctxPlayers.length ? ctxPlayers : party.players;
 

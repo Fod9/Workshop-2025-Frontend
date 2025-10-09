@@ -16,6 +16,7 @@ import Chronometer from "~/components/global/Chronometer";
 import { ChatProvider } from "./context/chat";
 import Chat from "./components/layout/Chat";
 import LeaveGameButton from "~/components/global/LeaveGameButton";
+import ClientOnly from "./components/ClientOnly";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,10 +57,10 @@ export default function App() {
       <PlayerProvider>
         <GameSocketProvider>
           <ChatProvider>
-            <Chronometer />
-            <LeaveGameButton />
+            <ClientOnly>{() => <Chronometer />}</ClientOnly>
+            <ClientOnly>{() => <LeaveGameButton />}</ClientOnly>
             <Outlet />
-            <Chat />
+            <ClientOnly>{() => <Chat />}</ClientOnly>
           </ChatProvider>
         </GameSocketProvider>
       </PlayerProvider>

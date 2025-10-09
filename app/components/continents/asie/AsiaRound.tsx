@@ -176,6 +176,16 @@ export default function AsiaRound() {
 
   const activeFrom = dragFrom || draggingExisting;
 
+  const handleClear = useCallback(() => {
+    setConnections([]);
+    setDragFrom(null);
+    setDraggingExisting(null);
+    setMousePos(null);
+    setHoverSymbol(null);
+    setIsSuccess(false);
+    setShowOverlay(false);
+  }, []);
+
   return (
     <>
       {showInfo && (
@@ -190,6 +200,10 @@ export default function AsiaRound() {
             &gt; Le noeud de Gaia chargé de garantir un taux de CO2 dans l'air stable a été corrompu.
           </p>
           <p className="console-text">&gt; Aide Gaia à rétablir un taux acceptable.</p>
+        </div>
+
+        <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem'}}>
+          <button className="btn-console" style={{padding: '0.3rem 0.8rem'}} onClick={handleClear}>Réinitialiser les câbles</button>
         </div>
 
         <div className="values-header">
