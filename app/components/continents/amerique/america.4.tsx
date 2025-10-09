@@ -11,16 +11,23 @@ function normaliseNumberText(s: string): string {
 }
 
 function parseRatioFormula(input: string): number | null {
-  // Accept forms like: "objectif = base × 0.8" or "objectif=base*0.8" or "base*0.8"
+  // Accept: "objectif = base × (n/d)", "base*x(n/d)", or single number after ×
   const str = normaliseNumberText(input).toLowerCase();
-  // Extract last number appearing after a * or x or ×
+  // Fraction form
+  const frac = str.match(/[\*x×]\s*\(?\s*([0-9]+(?:\.[0-9]+)?)\s*\/\s*([0-9]+(?:\.[0-9]+)?)\s*\)?/);
+  if (frac && frac[1] && frac[2]) {
+    const n = Number(frac[1]);
+    const d = Number(frac[2]);
+    if (Number.isFinite(n) && Number.isFinite(d) && d !== 0) return n / d;
+  }
+  // Simple number form
   const m = str.match(/[\*x×]\s*([0-9]+(?:\.[0-9]+)?)/);
   if (m && m[1]) {
     const r = Number(m[1]);
     return Number.isFinite(r) ? r : null;
   }
-  // Fallback: get any number between 0 and 1
-  const any = str.match(/([0]\.[0-9]+|1(?:\.0+)?)/);
+  // Fallback: any 0..1 number in text
+  const any = str.match(/\b(0(?:\.[0-9]+)?|1(?:\.0+)?)\b/);
   if (any && any[1]) {
     const r = Number(any[1]);
     if (r >= 0 && r <= 1 && Number.isFinite(r)) return r;
@@ -28,13 +35,48 @@ function parseRatioFormula(input: string): number | null {
   return null;
 }
 
-function parseSubtractFormula(input: string): number | null {
-  // Accept forms like: "objectif = base − 92" or "base-92" with hyphen or minus
+function parseSubtractSingle(input: string): number | null {
   const str = normaliseNumberText(input).toLowerCase();
   const m = str.match(/[\-−]\s*([0-9]+(?:\.[0-9]+)?)/);
   if (m && m[1]) {
     const d = Number(m[1]);
     return Number.isFinite(d) ? d : null;
+  }
+  return null;
+}
+
+function parseSubtractSum(input: string): number | null {
+  const str = normaliseNumberText(input).toLowerCase();
+  // forms: -(a + b) or -a - b
+  const paren = str.match(/[\-−]\s*\(\s*([0-9]+(?:\.[0-9]+)?)\s*\+\s*([0-9]+(?:\.[0-9]+)?)\s*\)/);
+  if (paren && paren[1] && paren[2]) {
+    const a = Number(paren[1]);
+    const b = Number(paren[2]);
+    if (Number.isFinite(a) && Number.isFinite(b)) return a + b;
+  }
+  const chain = str.match(/[\-−]\s*([0-9]+(?:\.[0-9]+)?)\s*[\-−]\s*([0-9]+(?:\.[0-9]+)?)/);
+  if (chain && chain[1] && chain[2]) {
+    const a = Number(chain[1]);
+    const b = Number(chain[2]);
+    if (Number.isFinite(a) && Number.isFinite(b)) return a + b;
+  }
+  return null;
+}
+
+function parseSubtractProduct(input: string): number | null {
+  const str = normaliseNumberText(input).toLowerCase();
+  // forms: -(k * m) or -k*m or -k×m
+  const paren = str.match(/[\-−]\s*\(\s*([0-9]+(?:\.[0-9]+)?)\s*[\*x×]\s*([0-9]+(?:\.[0-9]+)?)\s*\)/);
+  if (paren && paren[1] && paren[2]) {
+    const k = Number(paren[1]);
+    const m = Number(paren[2]);
+    if (Number.isFinite(k) && Number.isFinite(m)) return k * m;
+  }
+  const simple = str.match(/[\-−]\s*([0-9]+(?:\.[0-9]+)?)\s*[\*x×]\s*([0-9]+(?:\.[0-9]+)?)/);
+  if (simple && simple[1] && simple[2]) {
+    const k = Number(simple[1]);
+    const m = Number(simple[2]);
+    if (Number.isFinite(k) && Number.isFinite(m)) return k * m;
   }
   return null;
 }
@@ -63,7 +105,8 @@ export default function AmericaRound4() {
   }, [foodFormula]);
 
   const testTextile = useCallback(() => {
-    const d = parseSubtractFormula(textileFormula);
+    const sum = parseSubtractSum(textileFormula);
+    const d = sum != null ? sum : parseSubtractSingle(textileFormula);
     if (d == null) { setTextileOk(false); return; }
     const expected = 132 - 92; // 40
     const base = 132;
@@ -72,7 +115,8 @@ export default function AmericaRound4() {
   }, [textileFormula]);
 
   const testCosm = useCallback(() => {
-    const d = parseSubtractFormula(cosmFormula);
+    const prod = parseSubtractProduct(cosmFormula);
+    const d = prod != null ? prod : parseSubtractSingle(cosmFormula);
     if (d == null) { setCosmOk(false); return; }
     const expected = 130 - 45; // 85
     const base = 130;
@@ -118,7 +162,7 @@ export default function AmericaRound4() {
           <h3 className="terminal-title">Alimentaire</h3>
           <div className="terminal-box">
             <p className="terminal-line">Base: 2750 kcal/j/pers — Objectif: 2200 kcal/j/pers</p>
-            <p className="terminal-line">Formule attendue: objectif = base × r</p>
+            <p className="terminal-line">Formule attendue: objectif = base × (n / d)</p>
             <div className="config-form" style={{ gridTemplateColumns: '1fr auto' }}>
               <input className="config-input" placeholder="objectif = base × r" value={foodFormula} onChange={(e) => setFoodFormula(e.target.value)} />
               <button className="send-btn" onClick={testFood}>Tester</button>
@@ -133,7 +177,7 @@ export default function AmericaRound4() {
           <h3 className="terminal-title">Textile</h3>
           <div className="terminal-box">
             <p className="terminal-line">Production: 132 Mds t/an — Objectif: 40 Mds t/an</p>
-            <p className="terminal-line">Formule attendue: objectif = base − d</p>
+            <p className="terminal-line">Formule attendue: objectif = base − (d1 + d2)</p>
             <div className="config-form" style={{ gridTemplateColumns: '1fr auto' }}>
               <input className="config-input" placeholder="objectif = base − d" value={textileFormula} onChange={(e) => setTextileFormula(e.target.value)} />
               <button className="send-btn" onClick={testTextile}>Tester</button>
@@ -148,7 +192,7 @@ export default function AmericaRound4() {
           <h3 className="terminal-title">Cosmétique</h3>
           <div className="terminal-box">
             <p className="terminal-line">Production: 130 Mds t/an — Objectif: 85 Mds t/an</p>
-            <p className="terminal-line">Formule attendue: objectif = base − d</p>
+            <p className="terminal-line">Formule attendue: objectif = base − (k × m)</p>
             <div className="config-form" style={{ gridTemplateColumns: '1fr auto' }}>
               <input className="config-input" placeholder="objectif = base − d" value={cosmFormula} onChange={(e) => setCosmFormula(e.target.value)} />
               <button className="send-btn" onClick={testCosm}>Tester</button>
