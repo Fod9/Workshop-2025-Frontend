@@ -43,13 +43,13 @@
 }
 
 .green {
-    color: var(--color-green);
+    color: var(--color-green)!important;
     padding-left: 0.5rem;
     font-size: 1.5rem;
 }
 
 .red {
-    color: var(--color-red);
+    color: var(--color-red)!important;
     padding-left: 0.5rem;
     font-size: 1.5rem;
 }
@@ -127,15 +127,15 @@
 }
 
 .calculated-value {
-    font-size: 3rem;
+    font-size: 3rem!important;
     font-weight: 700;
-    color: var(--color-red)
+    color: var(--color-red)!important
 }
 
 .right-calculated-value {
-    font-size: 3rem;
+    font-size: 3rem!important;
     font-weight: 700;
-    color: var(--color-green)
+    color: var(--color-green)!important
 }
 
 .top-bidule {
@@ -196,6 +196,16 @@
   animation: fadeIn 1s ease forwards;
 }
 
+.info-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 16, 22, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
 .console-overlay {
   font-family: "Source Code Pro", monospace;
   color: var(--color-bright-turquoise);
@@ -206,6 +216,18 @@
   width: 40rem;
   height: 15rem;
   box-shadow: 0 0 30px rgba(68, 168, 142, 0.4);
+}
+
+.info-console-overlay {
+  font-family: "Source Code Pro", monospace;
+  color: var(--color-red);
+  border: 1px solid var(--color-red);
+  border-radius: 12px;
+  background: rgba(15, 25, 30, 0.9);
+  padding: 2rem 3rem;
+  width: 45rem;
+  height: 23rem;
+  box-shadow: 0 0 30px rgba(168, 68, 68, 0.4);
 }
 
 .console-line {
@@ -242,10 +264,31 @@
   transition: all 0.25s ease;
 }
 
+.red-btn-console {
+  display: block;
+  margin: 1.8rem auto 0;
+  background: transparent;
+  border: 1px solid var(--color-red);
+  color: var(--color-red);
+  padding: 0.7rem 1.4rem;
+  font-family: "Source Code Pro", monospace;
+  font-weight: 600;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
 .btn-console:hover {
   background: var(--color-bright-turquoise);
   color: var(--color-soft-black);
   box-shadow: 0 0 15px var(--color-bright-turquoise);
+}
+
+.red-btn-console:hover {
+  background: var(--color-red);
+  color: var(--color-soft-black);
+  box-shadow: 0 0 15px var(--color-red);
 }
 
 @keyframes typing {
@@ -260,4 +303,25 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
+}
+
+.info-line {
+  font-family: "Source Code Pro", monospace;
+  font-size: 1.2rem;
+  color: var(--color-red);
+  margin: 0.4rem 0;
+  white-space: pre-wrap;
+}
+
+.cursor {
+  display: inline-block;
+  width: 0.6rem;
+  color: var(--color-red);
+  animation: blinkCursor 0.9s infinite step-end;
+}
+
+@keyframes blinkCursor {
+  50% {
+    opacity: 0;
+  }
 }

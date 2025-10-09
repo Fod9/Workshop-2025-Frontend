@@ -4,6 +4,7 @@ import AsiaSuccess from "./AsiaSuccess";
 import { backendService } from "~/services/backend";
 import type { ApiSuccess, GameRead } from "~/types/backend";
 import { useGame } from "~/context/game";
+import Info from "./Info";
 
 type Point = { x: number; y: number };
 type Connection = { from: string; to: string };
@@ -16,8 +17,10 @@ const OPS: Record<OpId, (x: number) => number> = {
 };
 
 export default function AsiaRound() {
+  const [showInfo, setShowInfo] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  
   const { gameId, setStage, setPlayers } = useGame();
   const continuedRef = useRef(false);
   
@@ -175,6 +178,12 @@ export default function AsiaRound() {
 
   return (
     <>
+      {showInfo && (
+        <Info
+          continent="Asia"
+          onContinue={() => setShowInfo(false)}
+        />
+      )}
       <main className="asia-screen" onMouseMove={handleMove} onMouseUp={handleCancel}>
         <div className="consigne">
           <p className="console-text">
