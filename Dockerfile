@@ -19,4 +19,14 @@ COPY ./package.json package-lock.json /app/
 COPY --from=production-dependencies-env /app/node_modules /app/node_modules
 COPY --from=build-env /app/build /app/build
 WORKDIR /app
+
+# Exposer le port 3000 (port par défaut de React Router)
+EXPOSE 3000
+
+# Créer un utilisateur non-root pour la sécurité
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S reactuser -u 1001 && \
+    chown -R reactuser:nodejs /app
+USER reactuser
+
 CMD ["npm", "run", "start"]

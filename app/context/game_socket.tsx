@@ -41,7 +41,7 @@ export function GameSocketProvider({ children }: { children: React.ReactNode }) 
 
   const connect = useCallback(() => {
     if (!gameId) return;
-    const path = `/game/ws/${gameId}`;
+    const path = `/api/game/ws/${gameId}`;
     const url = resolveWebSocketUrl(path);
 
     try {
